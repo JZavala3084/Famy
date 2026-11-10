@@ -1,0 +1,26 @@
+{"v":3,"createdOnFiles":{"v":1,"at":"2026-11-10T04:40:00Z"},"title":"Famy · Diseño UI","launch":{"view":"canvas"},"pages":[],
+"boards":{
+"Main.dc.html":{"x":0,"y":300,"w":390,"h":844,"title":"Iniciar sesión","is_interactive":true,"radius":32},
+"Registro.dc.html":{"x":470,"y":300,"w":390,"h":844,"title":"Registro","is_interactive":true,"radius":32},
+"Familia.dc.html":{"x":940,"y":300,"w":390,"h":844,"title":"Crear o unirse a familia","is_interactive":true,"radius":32},
+"Inicio.dc.html":{"x":0,"y":1544,"w":390,"h":844,"title":"Inicio","is_interactive":true,"radius":32},
+"Compras.dc.html":{"x":470,"y":1544,"w":390,"h":844,"title":"Lista de compras","is_interactive":true,"radius":32},
+"Presupuesto.dc.html":{"x":940,"y":1544,"w":390,"h":844,"title":"Presupuesto","is_interactive":true,"radius":32},
+"Recetas.dc.html":{"x":1410,"y":1544,"w":390,"h":844,"title":"Recetas","is_interactive":true,"radius":32},
+"Horarios.dc.html":{"x":0,"y":2788,"w":390,"h":844,"title":"Horarios","is_interactive":true,"radius":32},
+"Tareas.dc.html":{"x":470,"y":2788,"w":390,"h":844,"title":"Tareas del hogar","is_interactive":true,"radius":32},
+"Pagos.dc.html":{"x":940,"y":2788,"w":390,"h":844,"title":"Calendario de pagos","is_interactive":true,"radius":32},
+"Cumpleanos.dc.html":{"x":1410,"y":2788,"w":390,"h":844,"title":"Cumpleaños","is_interactive":true,"radius":32},
+"WebInicio.dc.html":{"x":0,"y":4032,"w":1440,"h":980,"title":"Web · Panel familiar","expand":"fill","is_interactive":true},
+"TabBar.dc.html":{"x":1520,"y":4032,"w":390,"h":84,"title":"Componente · Barra inferior"}
+},
+"order":["Main.dc.html","Registro.dc.html","Familia.dc.html","Inicio.dc.html","Compras.dc.html","Presupuesto.dc.html","Recetas.dc.html","Horarios.dc.html","Tareas.dc.html","Pagos.dc.html","Cumpleanos.dc.html","WebInicio.dc.html","TabBar.dc.html"],
+"notes":{
+"t1":{"x":0,"y":0,"text":"Acceso y familia","kind":"title1","maxW":1800},
+"t2":{"x":0,"y":1244,"text":"Módulos principales","kind":"title1","maxW":1800},
+"t3":{"x":0,"y":2488,"text":"Organización y fechas","kind":"title1","maxW":1800},
+"t4":{"x":0,"y":3732,"text":"Web (Angular) y componentes","kind":"title1","maxW":1910},
+"s1":{"x":1410,"y":300,"w":380,"fill":"teal","size":"m","text":"Sistema visual Famy\n\nTipografía: Plus Jakarta Sans (400–800)\nFondo #F6F5F1 · Superficie #FFFFFF\nTexto #1B1D22 · Secundario #5E6470\nPrimario (verde azulado) #1E6B5E · suave #E3F0EC\nAcento (terracota) #C2562E · suave #FBE9E0\nRadios 12–20 px · Toques mínimos de 44 px\n\nPrototipo: pulsa Play en cualquier pantalla móvil y navega con la barra inferior y los accesos del Inicio."},
+"s2":{"x":1410,"y":900,"w":380,"fill":"orange","size":"s","text":"Tiempo real: los indicadores «En vivo» representan los cambios que llegan por webhooks / WebSocket desde Spring Boot (p. ej. alguien marca un artículo en Compras y aparece al instante en los demás dispositivos)."}
+},
+"designSystems":[]}

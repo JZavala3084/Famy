@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Barra inferior</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<nav aria-label="Navegación principal" style="width: 390px; height: 84px; box-sizing: border-box; background: #FFFFFF; border-top: 1px solid #E4E2DC; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; padding: 8px 8px 14px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px">
+  <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+    <a href="{{t.href}}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: {{t.color}}; font-size: 11px; font-weight: {{t.weight}}; border-radius: 14px">
+      <span style="width: 52px; height: 30px; border-radius: 15px; background: {{t.bg}}; display: flex; align-items: center; justify-content: center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.d}}"></path></svg>
+      </span>
+      {{t.label}}
+    </a>
+  </sc-for>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["inicio","compras","tareas","finanzas","agenda"],"default":"inicio"},"$preview":{"width":390,"height":84}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active ?? 'inicio';
+    const tabs = [
+      { id: 'inicio', label: 'Inicio', href: 'Inicio.dc.html', d: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z' },
+      { id: 'compras', label: 'Compras', href: 'Compras.dc.html', d: 'M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2 M9 20.5h.01 M17 20.5h.01' },
+      { id: 'tareas', label: 'Tareas', href: 'Tareas.dc.html', d: 'M4 4h16v16H4z M8 12l3 3 5-6' },
+      { id: 'finanzas', label: 'Finanzas', href: 'Presupuesto.dc.html', d: 'M3 7h18v13H3z M3 7l3-3h12l3 3 M16 13.5h2' },
+      { id: 'agenda', label: 'Agenda', href: 'Horarios.dc.html', d: 'M4 6h16v14H4z M4 10h16 M8 3v4 M16 3v4' }
+    ];
+    return {
+      tabs: tabs.map((t) => {
+        const on = t.id === active;
+        return { ...t, color: on ? '#1E6B5E' : '#5E6470', weight: on ? 700 : 500, bg: on ? '#E3F0EC' : 'transparent' };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

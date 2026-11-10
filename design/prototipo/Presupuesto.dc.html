@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Presupuesto</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E6B5E}a:hover{color:#15524A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F5F1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1B1D22; display: flex; flex-direction: column">
+  <main style="flex: 1; min-height: 0; overflow: hidden; padding: 24px 20px 12px; display: flex; flex-direction: column; gap: 16px">
+    <header style="display: flex; align-items: center; justify-content: space-between">
+      <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em">Presupuesto</h1>
+      <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4E2DC; font-size: 13px; font-weight: 600">
+        Noviembre 2026
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </span>
+    </header>
+
+    <section style="background: #1E6B5E; color: #FFFFFF; border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+      <p style="margin: 0; font-size: 13px; font-weight: 600; color: #CFE6DF">Gastado este mes</p>
+      <p style="margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -0.02em">$11,160 <span style="font-size: 16px; font-weight: 600; color: #CFE6DF">de $18,000</span></p>
+      <div style="height: 10px; border-radius: 5px; background: #2D8676; overflow: hidden">
+        <div style="width: 62%; height: 10px; border-radius: 5px; background: #FFFFFF"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px; color: #CFE6DF">
+        <span>Disponible $6,840</span>
+        <span>20 días restantes</span>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 16px; font-weight: 700">Por categoría</h2>
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; justify-content: space-between; font-size: 14px">
+            <span style="font-weight: 600">{{c.name}}</span>
+            <span style="color: {{c.textColor}}; font-weight: 600">{{c.spent}} <span style="color: #5E6470; font-weight: 500">/ {{c.limit}}</span></span>
+          </div>
+          <div style="height: 8px; border-radius: 4px; background: #F0EEE9; overflow: hidden">
+            <div style="height: 8px; border-radius: 4px; background: {{c.bar}}; width: {{c.pct}}%"></div>
+          </div>
+        </div>
+      </sc-for>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 700">Últimos movimientos</h2>
+        <a href="#" style="font-size: 13px; font-weight: 700; text-decoration: none">Ver todos</a>
+      </div>
+      <sc-for list="{{moves}}" as="m" hint-placeholder-count="2">
+        <div style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 14px; padding: 10px 12px">
+          <span style="width: 36px; height: 36px; border-radius: 12px; background: #F0EEE9; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #5E6470">{{m.by}}</span>
+          <span style="flex: 1; display: flex; flex-direction: column">
+            <span style="font-size: 14px; font-weight: 600">{{m.title}}</span>
+            <span style="font-size: 12px; color: #5E6470">{{m.meta}}</span>
+          </span>
+          <span style="font-size: 14px; font-weight: 700">{{m.amount}}</span>
+        </div>
+      </sc-for>
+    </section>
+  </main>
+  <dc-import name="TabBar" active="finanzas" hint-size="390px,84px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const raw = [
+      ['Despensa', 4200, 5000], ['Servicios', 2380, 3000], ['Transporte', 1900, 2500],
+      ['Escuela', 1800, 2000], ['Entretenimiento', 880, 800]
+    ];
+    const fmt = (n) => '$' + n.toLocaleString('en-US');
+    const cats = raw.map(([name, s, l]) => {
+      const over = s > l;
+      return { name, spent: fmt(s), limit: fmt(l), pct: Math.min(100, Math.round((s / l) * 100)), bar: over ? '#C2562E' : '#1E6B5E', textColor: over ? '#9E4220' : '#1B1D22' };
+    });
+    return {
+      cats,
+      moves: [
+        { by: 'A', title: 'Súper semanal', meta: 'Despensa · hoy', amount: '−$1,240' },
+        { by: 'J', title: 'Gasolina', meta: 'Transporte · ayer', amount: '−$650' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

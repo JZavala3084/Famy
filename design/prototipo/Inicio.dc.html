@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Inicio</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E6B5E}a:hover{color:#15524A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F5F1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1B1D22; display: flex; flex-direction: column">
+  <main style="flex: 1; min-height: 0; overflow: hidden; padding: 24px 20px 12px; display: flex; flex-direction: column; gap: 16px">
+    <header style="display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <p style="margin: 0; font-size: 14px; color: #5E6470">Familia Zavala</p>
+        <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em">Hola, Jose</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <div style="display: flex">
+          <sc-for list="{{members}}" as="m" hint-placeholder-count="4">
+            <span title="{{m.name}}" style="width: 32px; height: 32px; border-radius: 16px; background: {{m.bg}}; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid #F6F5F1; margin-left: -8px">{{m.i}}</span>
+          </sc-for>
+        </div>
+        <button type="button" aria-label="Notificaciones" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #E4E2DC; background: #FFFFFF; color: #1B1D22; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z M10 21h4"></path></svg>
+          <span style="position: absolute; top: 9px; right: 10px; width: 8px; height: 8px; border-radius: 4px; background: #C2562E"></span>
+        </button>
+      </div>
+    </header>
+
+    <div style="display: flex; align-items: center; gap: 10px; background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 14px; padding: 10px 14px; font-size: 13px">
+      <span style="width: 8px; height: 8px; border-radius: 4px; background: #1E9E6B; box-shadow: 0 0 0 4px #DDF3E8; flex: none"></span>
+      <span style="flex: 1; color: #1B1D22"><b>Ana</b> añadió «Huevos» a Compras</span>
+      <span style="color: #5E6470">hace 1 min</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+      <sc-for list="{{cards}}" as="c" hint-placeholder-count="4">
+        <a href="{{c.href}}" style="background: {{c.bg}}; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: #1B1D22; min-height: 98px; box-sizing: border-box">
+          <span style="font-size: 13px; font-weight: 600; color: {{c.fg}}">{{c.label}}</span>
+          <span style="font-size: 24px; font-weight: 800; letter-spacing: -0.02em">{{c.value}}</span>
+          <span style="font-size: 12px; color: #5E6470">{{c.sub}}</span>
+        </a>
+      </sc-for>
+    </div>
+
+    <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 700">Hoy · martes 10</h2>
+        <a href="Horarios.dc.html" style="font-size: 13px; font-weight: 700; text-decoration: none">Ver agenda</a>
+      </div>
+      <sc-for list="{{today}}" as="e" hint-placeholder-count="3">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <span style="width: 46px; font-size: 13px; font-weight: 700; color: #5E6470">{{e.time}}</span>
+          <span style="width: 4px; height: 30px; border-radius: 2px; background: {{e.color}}"></span>
+          <div style="display: flex; flex-direction: column">
+            <span style="font-size: 14px; font-weight: 600">{{e.title}}</span>
+            <span style="font-size: 12px; color: #5E6470">{{e.who}}</span>
+          </div>
+        </div>
+      </sc-for>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 16px; font-weight: 700">Accesos</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{modules}}" as="m" hint-placeholder-count="8">
+          <a href="{{m.href}}" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: #1B1D22; font-size: 12px; font-weight: 600">
+            <span style="width: 52px; height: 52px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E4E2DC; display: flex; align-items: center; justify-content: center; color: {{m.color}}">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.d}}"></path></svg>
+            </span>
+            {{m.label}}
+          </a>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+  <dc-import name="TabBar" active="inicio" hint-size="390px,84px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = '#1E6B5E', C = '#C2562E', B = '#2F5DA8', P = '#6B4FA0';
+    return {
+      members: [
+        { i: 'J', name: 'Jose', bg: T }, { i: 'A', name: 'Ana', bg: C },
+        { i: 'S', name: 'Sofía', bg: P }, { i: 'D', name: 'Diego', bg: B }
+      ],
+      cards: [
+        { label: 'Compras', value: '7', sub: 'artículos pendientes', href: 'Compras.dc.html', bg: '#E3F0EC', fg: T },
+        { label: 'Tareas de hoy', value: '3 de 5', sub: 'completadas', href: 'Tareas.dc.html', bg: '#FFFFFF', fg: '#5E6470' },
+        { label: 'Presupuesto', value: '62 %', sub: '$11,160 de $18,000', href: 'Presupuesto.dc.html', bg: '#FFFFFF', fg: '#5E6470' },
+        { label: 'Próximo pago', value: 'Renta', sub: '15 nov · $8,500', href: 'Pagos.dc.html', bg: '#FBE9E0', fg: '#9E4220' }
+      ],
+      today: [
+        { time: '16:00', title: 'Fútbol', who: 'Diego · Papá lo lleva', color: B },
+        { time: '19:00', title: 'Cena: tacos de pollo', who: 'Toda la familia', color: T }
+      ],
+      modules: [
+        { label: 'Compras', href: 'Compras.dc.html', color: T, d: 'M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2 M9 20.5h.01 M17 20.5h.01' },
+        { label: 'Presupuesto', href: 'Presupuesto.dc.html', color: T, d: 'M3 7h18v13H3z M3 7l3-3h12l3 3 M16 13.5h2' },
+        { label: 'Recetas', href: 'Recetas.dc.html', color: C, d: 'M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z M5 17a3 3 0 0 1 3-3h11' },
+        { label: 'Horarios', href: 'Horarios.dc.html', color: B, d: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z M12 7v5l3 2' },
+        { label: 'Tareas', href: 'Tareas.dc.html', color: B, d: 'M4 4h16v16H4z M8 12l3 3 5-6' },
+        { label: 'Pagos', href: 'Pagos.dc.html', color: C, d: 'M6 3h12v18l-3-2-3 2-3-2-3 2z M9 8h6 M9 12h6' },
+        { label: 'Cumpleaños', href: 'Cumpleanos.dc.html', color: P, d: 'M4 10h16v10H4z M3 7h18v3H3z M12 7v13 M12 7c-2-4-6-3-5 0 M12 7c2-4 6-3 5 0' },
+        { label: 'Familia', href: 'Familia.dc.html', color: P, d: 'M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8z M2 21a7 7 0 0 1 14 0 M17 11a3 3 0 1 0 0-6 M22 21a5 5 0 0 0-4-5' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

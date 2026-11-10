@@ -24,6 +24,7 @@ Aplicación web y móvil (Android e iOS) para organizar la vida de una familia e
 | 06 | [Familias: crear y unirse](docs/06-familias.md) | Flujo de alta, invitaciones, roles y permisos |
 | 07 | [Despliegue en homelab](docs/07-despliegue-homelab.md) | Docker Compose, proxy inverso, backups, CI/CD |
 | 08 | [Roadmap](docs/08-roadmap.md) | Fases, hitos y decisiones pendientes |
+| 09 | [Diseño UI y prototipo](docs/09-diseno-ui.md) | Sistema visual, pantallas web y móvil, prototipo navegable |
 
 ## Stack
 
