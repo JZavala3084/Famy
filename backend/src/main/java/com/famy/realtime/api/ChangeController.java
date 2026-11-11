@@ -1,6 +1,7 @@
 package com.famy.realtime.api;
 
 import com.famy.family.FamilyMembership;
+import com.famy.family.FamilyRole;
 import com.famy.realtime.application.ChangeLogService;
 import com.famy.realtime.application.ChangeLogService.ChangePage;
 import com.famy.shared.security.CurrentUser;
@@ -39,8 +40,8 @@ public class ChangeController {
                     + "`cursor` devuelto. 410 `resync_required` si el cursor es anterior a la retención (30 días).")
     public ChangePage since(@PathVariable UUID familyId, @RequestParam(defaultValue = "0") @Min(0) long since,
             @RequestParam(defaultValue = "200") @Min(1) @Max(ChangeLogService.MAX_PAGE) int limit) {
-        membership.requireMember(familyId, CurrentUser.id());
-        return changes.since(familyId, since, limit);
+        FamilyRole role = membership.requireMember(familyId, CurrentUser.id());
+        return changes.since(familyId, since, limit, role != FamilyRole.CHILD);
     }
 
     @GetMapping("/cursor")

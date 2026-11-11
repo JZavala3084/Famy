@@ -25,7 +25,7 @@ Recomendación: exponer con **Cloudflare Tunnel** (o Tailscale Funnel) para no a
 |----------|--------|-------|
 | `caddy` | `caddy:2` | Proxy inverso, TLS, HSTS, compresión; rutas `/api` y `/ws` a la API, el resto a la web |
 | `famy-api` | `ghcr.io/jzavala3084/famy-api` | Java 21, usuario no root, healthcheck en `/actuator/health` |
-| `famy-web` | `ghcr.io/jzavala3084/famy-web` | Nginx sirviendo el build de Angular |
+| `famy-web` | `ghcr.io/jzavala3084/famy-web` | Nginx sin privilegios (puerto 8080) sirviendo el build de Angular; genera `/config.json` desde variables de entorno ([web/README.md](../web/README.md)) |
 | `postgres` | `postgres:16-alpine` | Volumen persistente, sin puerto expuesto al host |
 | `minio` | `minio/minio` | Fotos de recetas, comprobantes, avatares (opcional: volumen local en MVP) |
 | `backup` | `restic` + script | `pg_dump` diario, retención 7 diarios / 4 semanales / 6 mensuales, copia fuera del homelab (B2, otro disco o NAS) cifrada |
@@ -50,6 +50,8 @@ services:
     restart: unless-stopped
   famy-web:
     image: ghcr.io/jzavala3084/famy-web:latest
+    environment:
+      GOOGLE_CLIENT_ID_WEB: ${GOOGLE_CLIENT_ID_WEB}   # vacío = sin botón de Google
     restart: unless-stopped
   caddy:
     image: caddy:2

@@ -19,6 +19,9 @@ public interface FamilyMemberRepository extends JpaRepository<FamilyMember, Fami
     @Query("select m from FamilyMember m where m.id.userId = :userId and m.leftAt is null order by m.joinedAt")
     List<FamilyMember> findActiveByUser(UUID userId);
 
+    @Query("select distinct m.id.familyId from FamilyMember m where m.leftAt is null")
+    List<UUID> findActiveFamilyIds();
+
     @Query("select count(m) from FamilyMember m where m.id.familyId = :familyId and m.leftAt is null")
     long countActive(UUID familyId);
 }

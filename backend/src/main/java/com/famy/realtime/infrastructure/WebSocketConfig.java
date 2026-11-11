@@ -49,10 +49,14 @@ class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic")
+        registry.enableSimpleBroker("/topic", "/queue")
                 .setHeartbeatValue(new long[] {20_000, 20_000})
                 .setTaskScheduler(brokerScheduler);
         registry.setApplicationDestinationPrefixes("/app");
+        registry.setUserDestinationPrefix("/user");
+        // El canal de salida usa un pool de hilos: sin esto, dos cambios del mismo commit (p. ej. el ítem y el
+        // contador de su lista) pueden llegar a una sesión en desorden.
+        registry.setPreservePublishOrder(true);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.famy.identity;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 /** Datos públicos de un usuario que otros módulos pueden usar. */
@@ -11,5 +12,6 @@ public record UserSummary(
         String color,
         boolean emailVerified,
         String currency,
-        String timezone) {
+        String timezone,
+        LocalDate birthday) {
 }

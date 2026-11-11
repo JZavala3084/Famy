@@ -2,6 +2,8 @@
 backend/build/
 backend/.gradle/
 backend/bin/
+# Datos locales (comprobantes, clave VAPID)
+backend/data/
 *.class
 
 # IDE

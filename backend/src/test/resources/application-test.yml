@@ -4,6 +4,11 @@ famy:
     mode: log
   jwt:
     secure-cookie: true
+  data-dir: build/test-data
+  # Las pruebas llaman al job a mano con horas controladas.
+  reminders:
+    initial-delay: 1h
+    interval: 1h
 logging:
   level:
     com.famy: info

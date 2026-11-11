@@ -2,7 +2,11 @@ package com.famy.shared.recurrence;
 
 import com.famy.shared.error.ApiException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
@@ -51,6 +55,52 @@ public final class Recurrence {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * Ocurrencias que empiezan en {@code [from, to)}, contando desde {@code start} (el DTSTART, que es la primera
+     * ocurrencia), como mucho {@code max}.
+     */
+    public static List<Instant> between(String rrule, Instant start, ZoneId zone, Instant from, Instant to, int max) {
+        List<Instant> out = new ArrayList<>();
+        if (!to.isAfter(from)) {
+            return out;
+        }
+        RecurrenceRule rule = parse(rrule);
+        DateTime dtStart = new DateTime(TimeZone.getTimeZone(zone), start.toEpochMilli());
+        RecurrenceRuleIterator it = rule.iterator(dtStart);
+        if (from.isAfter(start)) {
+            it.fastForward(from.toEpochMilli());
+        } else if (start.isBefore(to)) {
+            // RFC 5545: el DTSTART siempre es la primera ocurrencia, aunque no cumpla la regla.
+            out.add(start);
+        }
+        for (int i = 0; i < MAX_ITERATIONS && it.hasNext() && out.size() < max; i++) {
+            long next = it.nextMillis();
+            if (next >= to.toEpochMilli()) {
+                break;
+            }
+            if (next >= from.toEpochMilli() && next != start.toEpochMilli()) {
+                out.add(Instant.ofEpochMilli(next));
+            }
+        }
+        return out;
+    }
+
+    /** Igual que {@link #between} pero con fechas sin hora (pagos, eventos de todo el día): {@code [from, to]}. */
+    public static List<LocalDate> datesBetween(String rrule, LocalDate start, LocalDate from, LocalDate to, int max) {
+        return between(rrule, midnightUtc(start), ZoneOffset.UTC, midnightUtc(from), midnightUtc(to.plusDays(1)), max)
+                .stream().map(i -> LocalDate.ofInstant(i, ZoneOffset.UTC)).toList();
+    }
+
+    /** Primera fecha estrictamente posterior a {@code after}, o vacío si la regla terminó. */
+    public static Optional<LocalDate> nextDateAfter(String rrule, LocalDate start, LocalDate after) {
+        return nextAfter(rrule, midnightUtc(start), ZoneOffset.UTC, midnightUtc(after))
+                .map(i -> LocalDate.ofInstant(i, ZoneOffset.UTC));
+    }
+
+    private static Instant midnightUtc(LocalDate date) {
+        return date.atStartOfDay(ZoneOffset.UTC).toInstant();
     }
 
     private static RecurrenceRule parse(String rrule) {

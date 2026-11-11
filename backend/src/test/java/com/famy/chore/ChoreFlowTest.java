@@ -63,6 +63,12 @@ class ChoreFlowTest extends IntegrationTest {
         MvcResult history = getAuth(base(familyId) + "/" + choreId + "/completions", ana);
         assertThat((List<String>) json(history, "$[*].completedBy")).containsExactly(anaId, sofiId);
 
+        MvcResult today = getAuth(base(familyId) + "/completions", sofi);
+        assertThat((List<String>) json(today, "$[*].choreId")).containsOnly(choreId);
+        assertThat((List<?>) json(today, "$")).hasSize(2);
+        MvcResult otherDay = getAuth(base(familyId) + "/completions?date=2020-01-01", sofi);
+        assertThat((List<?>) json(otherDay, "$")).isEmpty();
+
         MvcResult score = getAuth(base(familyId) + "/scoreboard", sofi);
         assertThat((List<?>) json(score, "$.members")).hasSize(3);
         assertThat((Integer) json(score, "$.members[0].points")).isEqualTo(5);

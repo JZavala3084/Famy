@@ -8,10 +8,17 @@ import java.util.UUID;
  * commit, lo envía por WebSocket a {@code /topic/families/{familyId}}.
  *
  * @param entity  nombre estable de la entidad, p. ej. {@code shopping.item}
- * @param payload la representación de la entidad tal como la devuelve la API REST ({@code {id}} al borrar)
+ * @param payload  la representación de la entidad tal como la devuelve la API REST ({@code {id}} al borrar)
+ * @param audience quién puede verlo: toda la familia o solo los adultos (p. ej. pagos, que los hijos no ven)
  */
 public record DomainChange(UUID familyId, String entity, UUID entityId, Op op, long version, UUID actorId,
-        Object payload) {
+        Object payload, Audience audience) {
+
+    public enum Audience {
+        FAMILY,
+        /** OWNER, ADMIN y MEMBER; no CHILD. */
+        ADULTS
+    }
 
     public enum Op {
         C("created"),

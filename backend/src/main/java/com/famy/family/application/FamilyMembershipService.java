@@ -9,6 +9,8 @@ import com.famy.shared.error.ApiException;
 import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -45,6 +47,27 @@ class FamilyMembershipService implements FamilyMembership {
     public Set<UUID> activeMemberIds(UUID familyId) {
         return members.findActiveByFamily(familyId).stream().map(FamilyMember::getUserId)
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UUID> activeFamilyIds() {
+        return members.findActiveFamilyIds();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<UUID, FamilyRole> activeMembers(UUID familyId) {
+        return members.findActiveByFamily(familyId).stream()
+                .collect(Collectors.toUnmodifiableMap(FamilyMember::getUserId, FamilyMember::getRole));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String currency(UUID familyId) {
+        return families.findById(familyId)
+                .orElseThrow(() -> ApiException.notFound("family_not_found", "Familia no encontrada."))
+                .getCurrency();
     }
 
     @Override

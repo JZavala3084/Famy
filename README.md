@@ -2,7 +2,7 @@
 
 Aplicación web y móvil (Android e iOS) para organizar la vida de una familia en un solo lugar: lista de compras, presupuesto, recetas, horarios, tareas del hogar, calendario de pagos, cumpleaños, salud y medicamentos, y más. Todos los miembros ven los cambios al instante.
 
-> Estado: **Fase 3 – Tiempo real, compras y tareas** en revisión (listas de compras y tareas sincronizadas en vivo por WebSocket, sobre las cuentas y familias de la fase 2). Ver [08 · Roadmap](docs/08-roadmap.md) y [backend/README.md](backend/README.md).
+> Estado: **Fase 4 – Web (Angular) v1** en revisión: login, onboarding de familia, inicio, compras y tareas en el navegador, sincronizados en vivo sobre la API de las fases 2 y 3. Ver [08 · Roadmap](docs/08-roadmap.md), [backend/README.md](backend/README.md) y [web/README.md](web/README.md).
 
 ## Propuesta de valor
 
@@ -32,7 +32,7 @@ Aplicación web y móvil (Android e iOS) para organizar la vida de una familia e
 |------|------------|
 | Backend | Java 21 + Spring Boot 4.1 (Web MVC, Security, Data JPA, Modulith, Validation), Gradle Kotlin DSL |
 | Base de datos | PostgreSQL 16 + Flyway |
-| Web | Angular (standalone components, Angular Material o Tailwind según diseño) |
+| Web | Angular 22 (standalone, signals, sin zone.js) con CSS propio del sistema visual, `@stomp/stompjs`, Vitest; Nginx en producción |
 | Móvil | Kotlin Multiplatform + Compose Multiplatform (Android e iOS) |
 | Tiempo real | WebSocket (STOMP) + notificaciones push (FCM / APNs) |
 | Despliegue | Docker Compose en homelab, detrás de proxy inverso con HTTPS |

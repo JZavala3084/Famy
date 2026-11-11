@@ -1,6 +1,8 @@
 package com.famy.realtime.infrastructure;
 
 import com.famy.family.FamilyMembership;
+import com.famy.family.FamilyRole;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,14 +22,18 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
  * Seguridad de los frames STOMP entrantes:
  * <ul>
  *   <li>CONNECT exige {@code Authorization: Bearer <access token>} válido.</li>
- *   <li>SUBSCRIBE solo a {@code /topic/families/{id}} y solo si el usuario es miembro activo (se consulta la base).</li>
+ *   <li>SUBSCRIBE solo a {@code /topic/families/{id}} si el usuario es miembro activo (se consulta la base), a
+ *   {@code /topic/families/{id}/adults} si además no es CHILD, y a su propia cola
+ *   {@code /user/queue/notifications}.</li>
  *   <li>SEND no está permitido: los cambios se hacen por la API REST.</li>
  * </ul>
  */
 class StompAuthInterceptor implements ChannelInterceptor {
 
     private static final Pattern FAMILY_TOPIC = Pattern.compile(
-            "^/topic/families/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$");
+            "^/topic/families/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})(/adults)?$");
+    /** Cola personal: Spring la traduce a la sesión del usuario autenticado, nadie lee la de otro. */
+    static final String NOTIFICATIONS_QUEUE = "/user/queue/notifications";
 
     private final JwtDecoder jwtDecoder;
     private final FamilyMembership membership;
@@ -80,14 +86,21 @@ class StompAuthInterceptor implements ChannelInterceptor {
             throw new MessageDeliveryException("No autenticado");
         }
         String destination = accessor.getDestination();
+        if (NOTIFICATIONS_QUEUE.equals(destination)) {
+            return;
+        }
         Matcher m = destination == null ? null : FAMILY_TOPIC.matcher(destination);
         if (m == null || !m.matches()) {
             throw new MessageDeliveryException("Destino no permitido");
         }
         UUID familyId = UUID.fromString(m.group(1));
         UUID userId = UUID.fromString(auth.getToken().getSubject());
-        if (membership.roleOf(familyId, userId).isEmpty()) {
+        Optional<FamilyRole> role = membership.roleOf(familyId, userId);
+        if (role.isEmpty()) {
             throw new MessageDeliveryException("No perteneces a esa familia");
+        }
+        if (m.group(2) != null && role.get() == FamilyRole.CHILD) {
+            throw new MessageDeliveryException("Destino solo para adultos");
         }
     }
 }

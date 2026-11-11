@@ -60,6 +60,15 @@ public class ChoreController {
         return chores.scoreboard(familyId, CurrentUser.id(), date);
     }
 
+    @GetMapping("/completions")
+    @Operation(summary = "Marcas de la familia en un día (hoy por defecto, zona de la familia)",
+            description = "Las tareas que se repiten avanzan a la siguiente fecha al marcarse; con esto el cliente sabe "
+                    + "qué se hizo hoy y quién lo hizo.")
+    public List<CompletionView> completionsOn(@PathVariable UUID familyId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return chores.completionsOn(familyId, CurrentUser.id(), date);
+    }
+
     @GetMapping("/{choreId}")
     @Operation(summary = "Detalle de una tarea")
     public ChoreView get(@PathVariable UUID familyId, @PathVariable UUID choreId) {
