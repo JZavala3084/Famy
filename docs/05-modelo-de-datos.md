@@ -33,7 +33,7 @@ erDiagram
 ### Identidad
 | Tabla | Columnas clave |
 |-------|----------------|
-| `app_user` | id, email (único, citext), email_verified_at, password_hash (nulo si solo Google), display_name, avatar_url, color, birthday, timezone, locale, status, created_at |
+| `app_user` | id, email (único, citext), email_verified_at, password_hash (nulo si solo Google), display_name, avatar_url, color, birthday, timezone, locale, currency (ISO 4217, default `USD`), status, created_at |
 | `user_identity` | id, user_id, provider (`GOOGLE`), provider_subject (único por proveedor), email, linked_at |
 | `refresh_token` | id, user_id, token_hash, device_name, family_chain_id, expires_at, revoked_at, replaced_by, created_ip |
 | `email_token` | id, user_id, purpose (`VERIFY`, `RESET`), token_hash, expires_at, used_at |
@@ -42,7 +42,7 @@ erDiagram
 ### Familia
 | Tabla | Columnas clave |
 |-------|----------------|
-| `family` | id, name, avatar_url, currency (ISO 4217), timezone, owner_id, created_at |
+| `family` | id, name, avatar_url, currency (ISO 4217, default `USD`), timezone, owner_id, created_at |
 | `family_member` | family_id, user_id, role (`OWNER`, `ADMIN`, `MEMBER`, `CHILD`), nickname, joined_at, left_at · PK (family_id, user_id) |
 | `family_invitation` | id, family_id, code (8 car., único), token_hash (para enlace), role, email (opcional), max_uses, uses, expires_at, revoked_at, created_by |
 | `join_request` | id, family_id, user_id, status (`PENDING`, `APPROVED`, `REJECTED`), decided_by, decided_at |

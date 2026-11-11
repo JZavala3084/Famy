@@ -22,11 +22,11 @@ a{color:#1E6B5E}a:hover{color:#15524A}
         <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em">Hola, Jose</h1>
       </div>
       <div style="display: flex; align-items: center; gap: 8px">
-        <div style="display: flex">
+        <a href="Configuracion.dc.html" aria-label="Configuración y perfil" style="display: flex; min-height: 44px; align-items: center; padding-left: 8px; text-decoration: none">
           <sc-for list="{{members}}" as="m" hint-placeholder-count="4">
             <span title="{{m.name}}" style="width: 32px; height: 32px; border-radius: 16px; background: {{m.bg}}; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid #F6F5F1; margin-left: -8px">{{m.i}}</span>
           </sc-for>
-        </div>
+        </a>
         <button type="button" aria-label="Notificaciones" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #E4E2DC; background: #FFFFFF; color: #1B1D22; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z M10 21h4"></path></svg>
           <span style="position: absolute; top: 9px; right: 10px; width: 8px; height: 8px; border-radius: 4px; background: #C2562E"></span>

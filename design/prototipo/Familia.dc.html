@@ -32,6 +32,10 @@ a{color:#1E6B5E}a:hover{color:#15524A}
         <label for="fam" style="font-size: 14px; font-weight: 600">Nombre de la familia</label>
         <input id="fam" type="text" value="Familia Zavala" style="height: 50px; box-sizing: border-box; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 14px; font: inherit; font-size: 16px; background: #FFFFFF; color: #1B1D22">
       </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="famcur" style="font-size: 14px; font-weight: 600">Moneda del presupuesto familiar</label>
+        <select id="famcur" style="height: 50px; box-sizing: border-box; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 12px; font: inherit; font-size: 16px; background: #FFFFFF; color: #1B1D22"><option selected>USD · Dólar estadounidense</option><option>PEN · Sol peruano</option><option>MXN · Peso mexicano</option><option>EUR · Euro</option></select>
+      </div>
       <div style="display: flex; flex-direction: column; gap: 10px">
         <p style="margin: 0; font-size: 14px; font-weight: 600">Color de la familia</p>
         <div style="display: flex; gap: 12px">
@@ -53,9 +57,9 @@ a{color:#1E6B5E}a:hover{color:#15524A}
     <div style="display: flex; flex-direction: column; gap: 18px">
       <div style="display: flex; flex-direction: column; gap: 10px">
         <label for="c1" style="font-size: 14px; font-weight: 600">Código de invitación</label>
-        <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px">
-          <sc-for list="{{code}}" as="c" hint-placeholder-count="6">
-            <input id="c{{$index}}" aria-label="Carácter {{$index}}" type="text" value="{{c.v}}" style="height: 56px; box-sizing: border-box; border: 1px solid {{c.border}}; border-radius: 12px; text-align: center; font: inherit; font-size: 22px; font-weight: 700; background: #FFFFFF; color: #1B1D22; width: 100%">
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px">
+          <sc-for list="{{code}}" as="c" hint-placeholder-count="8">
+            <input id="c{{$index}}" aria-label="Carácter {{$index}}" type="text" value="{{c.v}}" style="height: 56px; box-sizing: border-box; border: 1px solid {{c.border}}; border-radius: 12px; text-align: center; font: inherit; font-size: 20px; font-weight: 700; background: #FFFFFF; color: #1B1D22; width: 100%; padding: 0">
           </sc-for>
         </div>
       </div>
@@ -78,7 +82,7 @@ class Component extends DCLogic {
     const crear = this.state.mode === 'crear';
     const on = 'height: 44px; border: 0; border-radius: 11px; background: #FFFFFF; color: #1B1D22; font: inherit; font-size: 15px; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.08); cursor: pointer';
     const off = 'height: 44px; border: 0; border-radius: 11px; background: transparent; color: #5E6470; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer';
-    const chars = ['F', 'M', '7', 'K', '', ''];
+    const chars = ['F', 'M', '7', 'K', '2', 'Q', '', ''];
     return {
       isCrear: crear,
       isUnirse: !crear,
@@ -86,7 +90,7 @@ class Component extends DCLogic {
       unirseTab: crear ? off : on,
       setCrear: () => this.setState({ mode: 'crear' }),
       setUnirse: () => this.setState({ mode: 'unirse' }),
-      code: chars.map((v, i) => ({ v, border: i === 4 ? '#1E6B5E' : '#D9D6CF' })),
+      code: chars.map((v, i) => ({ v, border: i === 6 ? '#1E6B5E' : '#D9D6CF' })),
       cta: crear ? 'Crear familia' : 'Solicitar unirme'
     };
   }

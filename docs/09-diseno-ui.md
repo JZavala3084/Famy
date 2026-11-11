@@ -46,6 +46,11 @@ Indicador **«En vivo»** (punto verde): representa los cambios que llegan en ti
 
 En Inicio, «Salud» reemplaza a «Familia» en los accesos (la familia se gestiona desde el perfil) y aparece un aviso de toma pendiente. En el panel web se añade «Salud» al menú y un panel «Tomas de hoy».
 
+### Configuración (móvil)
+16. **Configuración** – perfil, moneda (USD por defecto, con vista previa del formato), idioma, zona horaria, notificaciones (medicamentos, pagos, actividad, horario de silencio), familia, seguridad y cerrar sesión. Se abre tocando los avatares del Inicio.
+
+En *Crear familia* se añadió la moneda del presupuesto familiar, y el código de invitación ahora tiene 8 caracteres (igual que en 06 · Familias).
+
 ### Web (Angular)
 12. **Panel familiar** – menú lateral con todos los módulos (se apila en móvil), buscador, invitar, 4 indicadores y paneles de compras, agenda, presupuesto, pagos, tareas y actividad reciente.
 
@@ -53,6 +58,6 @@ En Inicio, «Salud» reemplaza a «Familia» en los accesos (la familia se gesti
 - **Barra inferior** (`TabBar`) reutilizable con estado activo.
 
 ## Supuestos
-- Moneda en pesos (`$`) y formato de fecha en español.
+- Montos de ejemplo en USD (`$`); la moneda la elige cada usuario en Configuración. Fechas en español.
 - Nombres y montos son datos de ejemplo.
 - Fotos de recetas son marcadores de posición.

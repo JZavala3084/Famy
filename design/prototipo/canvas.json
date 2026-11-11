@@ -151,6 +151,15 @@
    "title": "Recordatorio de toma",
    "is_interactive": true,
    "radius": 32
+  },
+  "Configuracion.dc.html": {
+   "x": 1880,
+   "y": 300,
+   "w": 390,
+   "h": 1000,
+   "title": "Configuración",
+   "is_interactive": true,
+   "radius": 32
   }
  },
  "order": [
@@ -169,7 +178,8 @@
   "TabBar.dc.html",
   "Salud.dc.html",
   "MedicamentoNuevo.dc.html",
-  "Recordatorio.dc.html"
+  "Recordatorio.dc.html",
+  "Configuracion.dc.html"
  ],
  "notes": {
   "t1": {

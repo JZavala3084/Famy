@@ -10,10 +10,11 @@ Todos los módulos viven dentro de una **familia**. Cada dato pertenece a una fa
 - RF-1.3 Vincular Google a una cuenta creada con correo (mismo correo verificado).
 - RF-1.4 Recuperar contraseña por correo (token de un solo uso, 30 min).
 - RF-1.5 Perfil: nombre, foto, color, fecha de cumpleaños, zona horaria.
+- RF-1.7 Configuración del usuario: moneda (ISO 4217, **USD por defecto**), idioma, zona horaria y preferencias de notificación. La moneda elegida se usa por defecto al registrar montos y para mostrarlos.
 - RF-1.6 Cerrar sesión en este dispositivo o en todos.
 
 ### M2. Familia
-- RF-2.1 Crear familia (nombre, foto, moneda, zona horaria). El creador queda como `OWNER`.
+- RF-2.1 Crear familia (nombre, foto, moneda del presupuesto familiar, zona horaria). La moneda se precarga con la del creador (USD por defecto) y un admin puede cambiarla en Configuración. El creador queda como `OWNER`.
 - RF-2.2 Unirse con código de 8 caracteres o enlace de invitación.
 - RF-2.3 Roles: `OWNER`, `ADMIN`, `MEMBER`, `CHILD`. Detalle en [06 · Familias](06-familias.md).
 - RF-2.4 Salir de la familia, expulsar miembros, transferir propiedad.
