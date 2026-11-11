@@ -9,8 +9,8 @@
 - Recuperación con token aleatorio de 32 bytes, guardado como hash SHA-256, de un solo uso y expira en 30 min.
 
 ### Google
-- OpenID Connect con Google. Web: flujo Authorization Code + PKCE. Móvil: Credential Manager (Android) / Google Sign-In (iOS) obtiene un `id_token` que el backend valida (firma, `aud`, `iss`, `exp`, `email_verified`).
-- Si el correo ya existe y está verificado, se vincula la identidad de Google a esa cuenta (`user_identity`).
+- OpenID Connect con Google. Web: Google Identity Services entrega un `id_token` al navegador (sin secreto de cliente en el backend). Móvil: Credential Manager (Android) / Google Sign-In (iOS) obtiene un `id_token` que el backend valida (firma, `aud`, `iss`, `exp`, `email_verified`).
+- Si el correo ya existe y está verificado, se vincula la identidad de Google a esa cuenta (`user_identity`). Si existe pero nunca se verificó, Google la toma: se borra su contraseña y se cierran sus sesiones (evita que alguien registre antes el correo de otra persona).
 
 ### Sesiones y tokens
 - **Access token JWT** firmado con ES256 (o RS256), vida de 15 min. Claims: `sub` (user id), `fid` (familia activa), `role`.

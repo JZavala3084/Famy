@@ -1,0 +1,39 @@
+# Entorno local de desarrollo: PostgreSQL + Mailpit (bandeja para ver los correos de verificación).
+#   docker compose -f deploy/docker-compose.dev.yml up -d
+#   cd backend && ./gradlew bootRun --args='--spring.profiles.active=dev'
+# Para levantar también la API en contenedor: docker compose -f deploy/docker-compose.dev.yml --profile api up -d --build
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: famy
+      POSTGRES_USER: famy
+      POSTGRES_PASSWORD: famy
+    ports: ["5432:5432"]
+    volumes: [pgdata-dev:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U famy -d famy"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # UI web: http://localhost:8025
+
+  famy-api:
+    profiles: [api]
+    build: ../backend
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/famy
+      MAIL_HOST: mailpit
+    ports: ["8080:8080"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata-dev: {}

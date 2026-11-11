@@ -1,0 +1,9 @@
+famy:
+  base-url: http://localhost:4200
+  mail:
+    mode: log
+  jwt:
+    secure-cookie: true
+logging:
+  level:
+    com.famy: info

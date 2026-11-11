@@ -1,0 +1,11 @@
+# Producción (homelab): exige clave JWT y SMTP reales.
+famy:
+  jwt:
+    require-key: true
+    secure-cookie: true
+  mail:
+    mode: ${MAIL_MODE:smtp}
+
+springdoc:
+  swagger-ui:
+    enabled: ${SWAGGER_UI_ENABLED:false}

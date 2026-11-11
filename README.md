@@ -2,7 +2,7 @@
 
 Aplicación web y móvil (Android e iOS) para organizar la vida de una familia en un solo lugar: lista de compras, presupuesto, recetas, horarios, tareas del hogar, calendario de pagos, cumpleaños, salud y medicamentos, y más. Todos los miembros ven los cambios al instante.
 
-> Estado: **Especificación y diseño aprobados (2026-11-11).** Siguiente: Fase 2 – Fundaciones del backend. Ver [08 · Roadmap](docs/08-roadmap.md).
+> Estado: **Fase 2 – Fundaciones del backend** en revisión (cuentas, familias e invitaciones por API). Ver [08 · Roadmap](docs/08-roadmap.md) y [backend/README.md](backend/README.md).
 
 ## Propuesta de valor
 
@@ -30,7 +30,7 @@ Aplicación web y móvil (Android e iOS) para organizar la vida de una familia e
 
 | Capa | Tecnología |
 |------|------------|
-| Backend | Java 21 + Spring Boot (Web, Security, Data JPA, WebSocket, Validation) |
+| Backend | Java 21 + Spring Boot 4.1 (Web MVC, Security, Data JPA, Modulith, Validation), Gradle Kotlin DSL |
 | Base de datos | PostgreSQL 16 + Flyway |
 | Web | Angular (standalone components, Angular Material o Tailwind según diseño) |
 | Móvil | Kotlin Multiplatform + Compose Multiplatform (Android e iOS) |

@@ -1,0 +1,19 @@
+# Desarrollo local con deploy/docker-compose.dev.yml (PostgreSQL + Mailpit).
+spring:
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: 1025
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+famy:
+  mail:
+    mode: smtp
+  jwt:
+    # http://localhost no es HTTPS; en producción siempre true.
+    secure-cookie: false
+
+logging:
+  level:
+    com.famy: debug
