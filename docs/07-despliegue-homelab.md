@@ -61,7 +61,7 @@ secrets: { db_password: { file: ./secrets/db_password.txt } }
 ```
 
 ## Variables de entorno (`.env.example`, sin valores reales)
-`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `DB_PASSWORD_FILE`, `JWT_PRIVATE_KEY_FILE`, `GOOGLE_CLIENT_ID_WEB`, `GOOGLE_CLIENT_ID_ANDROID`, `GOOGLE_CLIENT_ID_IOS`, `FCM_CREDENTIALS_FILE`, `MAIL_HOST`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `APP_BASE_URL`, `CORS_ALLOWED_ORIGINS`.
+`SPRING_PROFILES_ACTIVE=prod`, `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `DB_PASSWORD`, `JWT_PRIVATE_KEY_FILE` (PEM PKCS#8 EC P-256), `GOOGLE_CLIENT_ID_WEB`, `GOOGLE_CLIENT_ID_ANDROID`, `GOOGLE_CLIENT_ID_IOS`, `FCM_CREDENTIALS_FILE`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM`, `APP_BASE_URL`, `CORS_ALLOWED_ORIGINS`. Plantilla en [`deploy/.env.example`](../deploy/.env.example); entorno local en `deploy/docker-compose.dev.yml`.
 
 ## Correo
 Para verificación y recuperación se necesita SMTP: un servicio transaccional (Resend, Brevo, Amazon SES) o Gmail con contraseña de aplicación al inicio.
