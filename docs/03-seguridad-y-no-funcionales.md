@@ -40,6 +40,7 @@
 | Auditoría | Tabla `audit_log` para login, cambios de rol, expulsiones, cambios de contraseña |
 | Logs | Sin datos sensibles (contraseñas, tokens, montos completos con nombre) |
 | Webhooks salientes | Firma HMAC-SHA256 con secreto por webhook, timestamp para evitar replays, bloqueo de IPs privadas (SSRF) salvo lista permitida del homelab |
+| Datos de salud | Cifrado a nivel de columna con AES-GCM (clave fuera de la base), visibilidad por registro (solo yo, adultos, familia), cada lectura en `audit_log`, excluidos de logs y de payloads de push (la notificación dice «Hora de tu medicamento», sin el nombre en pantalla bloqueada si el usuario lo elige) |
 | Datos en reposo | Disco del homelab cifrado; backups cifrados (ver [07](07-despliegue-homelab.md)) |
 
 ## Requerimientos no funcionales

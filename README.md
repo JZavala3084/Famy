@@ -1,6 +1,6 @@
 # Famy
 
-Aplicación web y móvil (Android e iOS) para organizar la vida de una familia en un solo lugar: lista de compras, presupuesto, recetas, horarios, tareas del hogar, calendario de pagos, cumpleaños y más. Todos los miembros ven los cambios al instante.
+Aplicación web y móvil (Android e iOS) para organizar la vida de una familia en un solo lugar: lista de compras, presupuesto, recetas, horarios, tareas del hogar, calendario de pagos, cumpleaños, salud y medicamentos, y más. Todos los miembros ven los cambios al instante.
 
 > Estado: **Especificación y diseño aprobados (2026-11-11).** Siguiente: Fase 2 – Fundaciones del backend. Ver [08 · Roadmap](docs/08-roadmap.md).
 
@@ -9,7 +9,7 @@ Aplicación web y móvil (Android e iOS) para organizar la vida de una familia e
 - Una sola app para toda la familia, con los cambios de cada miembro reflejados en tiempo real en los demás dispositivos.
 - Registro e inicio de sesión con Google o con correo y contraseña.
 - Crear una familia o unirse a una existente con un código o enlace de invitación.
-- Recordatorios de pagos, cumpleaños y tareas por notificación push.
+- Recordatorios de pagos, cumpleaños, tareas y tomas de medicamentos por notificación push.
 - Autoalojada: se despliega inicialmente en el homelab de Jose con Docker.
 
 ## Documentación
