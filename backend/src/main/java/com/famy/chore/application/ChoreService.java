@@ -182,6 +182,19 @@ public class ChoreService {
                 .map(CompletionView::of).toList();
     }
 
+    /**
+     * Marcas de toda la familia en un día (zona de la familia; hoy por defecto). Las tareas que se repiten avanzan
+     * a su siguiente fecha al marcarse, así que esto es lo que permite mostrar «hecha hoy» y quién la hizo.
+     */
+    @Transactional(readOnly = true)
+    public List<CompletionView> completionsOn(UUID familyId, UUID userId, LocalDate date) {
+        membership.requireMember(familyId, userId);
+        ZoneId zone = membership.timezone(familyId);
+        LocalDate day = date == null ? LocalDate.now(zone) : date;
+        return completions.findByFamilyBetween(familyId, day.atStartOfDay(zone).toInstant(),
+                day.plusDays(1).atStartOfDay(zone).toInstant()).stream().map(CompletionView::of).toList();
+    }
+
     /** RF-7.4: puntos por miembro en la semana (lunes a domingo, zona de la familia) que contiene {@code date}. */
     @Transactional(readOnly = true)
     public Scoreboard scoreboard(UUID familyId, UUID userId, LocalDate date) {
