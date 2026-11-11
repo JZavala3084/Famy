@@ -11,7 +11,8 @@ Primero diseño, prototipo y documentación; después se construye. Cada fase te
 | **4. Web (Angular) v1** | Login, onboarding de familia, inicio, compras, tareas | Primera versión usable en navegador | 3 semanas |
 | **5. Calendario, pagos y cumpleaños** | `calendar` con RRULE, `payment`, `celebration`, recordatorios programados, notificaciones web | Calendario familiar unificado con recordatorios | 3 semanas |
 | **6. Presupuesto y recetas** | `budget`, `transaction`, `recipe`, enviar ingredientes a compras, pagos que generan gastos | Todos los módulos del MVP en web | 3 semanas |
-| **7. Móvil (KMP)** | Compose Multiplatform, login con Google, sincronización offline con SQLDelight, push FCM / APNs | App Android (APK) e iOS (TestFlight) | 5-6 semanas |
+| **6b. Salud y medicamentos** | `health`: condiciones, medicamentos, horarios, generación de tomas, recordatorios push con acciones, aviso a un adulto, existencias que alimentan Compras, cifrado de columnas | Módulo de Salud en web y API | 2-3 semanas |
+| **7. Móvil (KMP)** | Compose Multiplatform, login con Google, sincronización offline con SQLDelight, push FCM / APNs, alarmas locales de medicamentos con acciones «Tomada / Posponer / Omitir» | App Android (APK) e iOS (TestFlight) | 5-6 semanas |
 | **8. Despliegue homelab** | Compose de producción, Caddy / Cloudflare Tunnel, backups, monitoreo, CI/CD a GHCR | Famy en producción en el homelab, usada por la familia | 1 semana (puede adelantarse desde la fase 4) |
 | **9. Post-MVP** | Webhooks salientes, planificador de comidas, varias familias por usuario, widgets, publicación en tiendas | Mejoras continuas | Continuo |
 
@@ -25,6 +26,8 @@ flowchart LR
     F3 --> F4[4 Web v1]
     F3 --> F5[5 Calendario, pagos, cumpleaños]
     F5 --> F6[6 Presupuesto y recetas]
+    F5 --> F6b[6b Salud]
+    F6b --> F7
     F4 --> F8[8 Homelab]
     F6 --> F7[7 Móvil KMP]
     F7 --> F9[9 Post-MVP]

@@ -48,6 +48,7 @@ backend/src/main/java/com/famy/
 ├── chore/         # tareas del hogar y rotación
 ├── payment/       # calendario de pagos
 ├── celebration/   # cumpleaños y fechas especiales
+├── health/        # condiciones, medicamentos, tomas y existencias
 ├── notification/  # push, recordatorios programados, preferencias
 ├── realtime/      # WebSocket/STOMP, publicación de eventos de dominio
 └── webhook/       # webhooks salientes (post-MVP)

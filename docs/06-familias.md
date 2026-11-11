@@ -35,6 +35,8 @@ flowchart TD
 | Crear eventos | ✓ | ✓ | ✓ | ✓ (solo propios) |
 | Registrar gastos | ✓ | ✓ | ✓ | – |
 | Editar presupuesto y pagos | ✓ | ✓ | – | – |
+| Ver datos de salud de otros | ✓ (según visibilidad) | ✓ (según visibilidad) | Solo los marcados «familia» | Solo los marcados «familia» |
+| Gestionar salud de menores | ✓ | ✓ | – | – |
 | Invitar miembros | ✓ | ✓ | Configurable | – |
 | Aprobar solicitudes / expulsar | ✓ | ✓ | – | – |
 | Cambiar roles | ✓ | Solo a MEMBER/CHILD | – | – |
