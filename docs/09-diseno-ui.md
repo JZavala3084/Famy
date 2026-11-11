@@ -1,6 +1,6 @@
 # 09 · Diseño UI y prototipo
 
-> Estado: **pendiente de aprobación de Jose.** Nada se construye hasta aprobar este diseño.
+> Estado: **aprobado por Jose el 11 nov 2026.** Base para la implementación en Angular y Kotlin Multiplatform.
 
 - **Lienzo de diseño y prototipo navegable:** https://claude.ai/artifact/UMXgzhpK1zMaVistkGoY1W (privado; se exporta a Canva, PDF o PNG desde *Compartir › Exportar*).
 - **Fuentes del prototipo:** [`design/prototipo/`](../design/prototipo/) (un archivo `.dc.html` por pantalla y `canvas.json` con la distribución).
