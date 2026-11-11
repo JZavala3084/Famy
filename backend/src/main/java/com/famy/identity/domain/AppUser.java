@@ -74,7 +74,8 @@ public class AppUser extends BaseEntity<UUID> {
     }
 
     public UserSummary toSummary() {
-        return new UserSummary(id, email, displayName, avatarUrl, color, isEmailVerified(), currency, timezone);
+        return new UserSummary(id, email, displayName, avatarUrl, color, isEmailVerified(), currency, timezone,
+                birthday);
     }
 
     public boolean isEmailVerified() {

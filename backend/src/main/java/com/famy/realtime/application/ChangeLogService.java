@@ -49,6 +49,11 @@ public class ChangeLogService {
         return "/topic/families/" + familyId;
     }
 
+    /** Cambios que solo ven los adultos (pagos...): los hijos no pueden suscribirse a este destino. */
+    public static String adultsTopic(UUID familyId) {
+        return topic(familyId) + "/adults";
+    }
+
     public record ChangePage(List<ChangeEvent> changes, long cursor, boolean hasMore) {
     }
 
@@ -61,8 +66,10 @@ public class ChangeLogService {
                 .query((rs, n) -> 1).list();
         Instant now = Instant.now();
         long id = jdbc.sql("""
-                INSERT INTO change_log (family_id, entity, entity_id, op, version, actor_id, occurred_at, payload)
-                VALUES (:familyId, :entity, :entityId, :op, :version, :actor, :occurredAt, CAST(:payload AS jsonb))
+                INSERT INTO change_log (family_id, entity, entity_id, op, version, actor_id, occurred_at, payload,
+                                        audience)
+                VALUES (:familyId, :entity, :entityId, :op, :version, :actor, :occurredAt, CAST(:payload AS jsonb),
+                        :audience)
                 RETURNING id
                 """)
                 .param("familyId", change.familyId())
@@ -73,14 +80,17 @@ public class ChangeLogService {
                 .param("actor", change.actorId())
                 .param("occurredAt", Timestamp.from(now))
                 .param("payload", payload)
+                .param("audience", change.audience().name())
                 .query(Long.class).single();
+        String destination = change.audience() == DomainChange.Audience.ADULTS
+                ? adultsTopic(change.familyId()) : topic(change.familyId());
         ChangeEvent event = new ChangeEvent(id, change.type(), change.familyId(), change.entity(), change.entityId(),
                 change.op().name(), change.version(), change.actorId(), now, mapper.readTree(payload));
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
                 try {
-                    broker.convertAndSend(topic(event.familyId()), event);
+                    broker.convertAndSend(destination, event);
                 } catch (RuntimeException e) {
                     // El cliente lo recupera con GET /changes al reconectar.
                     log.warn("No se pudo difundir el cambio {}: {}", event.id(), e.getMessage());
@@ -89,9 +99,13 @@ public class ChangeLogService {
         });
     }
 
-    /** Cambios con cursor mayor a {@code since}; 410 si ese cursor ya se purgó (el cliente debe recargar todo). */
+    /**
+     * Cambios con cursor mayor a {@code since}; 410 si ese cursor ya se purgó (el cliente debe recargar todo).
+     *
+     * @param includeAdultsOnly si se incluyen los cambios solo para adultos (falso para un CHILD)
+     */
     @Transactional(readOnly = true)
-    public ChangePage since(UUID familyId, long since, int limit) {
+    public ChangePage since(UUID familyId, long since, int limit, boolean includeAdultsOnly) {
         int size = Math.clamp(limit, 1, MAX_PAGE);
         long purgedUpTo = jdbc.sql("SELECT purged_up_to FROM change_log_watermark WHERE id = 1")
                 .query(Long.class).single();
@@ -101,9 +115,12 @@ public class ChangeLogService {
         }
         List<ChangeEvent> rows = jdbc.sql("""
                 SELECT id, family_id, entity, entity_id, op, version, actor_id, occurred_at, payload::text AS payload
-                FROM change_log WHERE family_id = :familyId AND id > :since ORDER BY id LIMIT :limit
+                FROM change_log WHERE family_id = :familyId AND id > :since
+                  AND (audience = 'FAMILY' OR :adults)
+                ORDER BY id LIMIT :limit
                 """)
                 .param("familyId", familyId)
+                .param("adults", includeAdultsOnly)
                 .param("since", since)
                 .param("limit", size + 1)
                 .query((rs, n) -> {

@@ -14,7 +14,9 @@ public record FamyProperties(
         @DefaultValue Google google,
         @DefaultValue Mail mail,
         @DefaultValue Auth auth,
-        @DefaultValue RateLimit rateLimit) {
+        @DefaultValue RateLimit rateLimit,
+        @DefaultValue("./data") String dataDir,
+        @DefaultValue Push push) {
 
     public record Cors(@DefaultValue("http://localhost:4200") List<String> allowedOrigins) {
     }
@@ -47,5 +49,18 @@ public record FamyProperties(
     }
 
     public record RateLimit(@DefaultValue("true") boolean enabled) {
+    }
+
+    /**
+     * Push web (VAPID, RFC 8292).
+     *
+     * @param vapidPrivateKeyFile PEM PKCS#8 con la clave EC P-256; si no existe se genera y se guarda (por defecto en
+     *                            {@code dataDir/vapid-private.pem}) para que las suscripciones sobrevivan reinicios
+     * @param subject             contacto que ven los servicios de push ({@code mailto:} o URL)
+     */
+    public record Push(
+            @DefaultValue("true") boolean enabled,
+            String vapidPrivateKeyFile,
+            @DefaultValue("mailto:admin@famy.local") String subject) {
     }
 }

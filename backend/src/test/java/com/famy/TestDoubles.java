@@ -2,6 +2,8 @@ package com.famy;
 
 import com.famy.identity.infrastructure.google.GoogleIdTokenVerifier;
 import com.famy.identity.infrastructure.mail.EmailSender;
+import com.famy.notification.infrastructure.PushGateway;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -61,6 +63,34 @@ public class TestDoubles {
         public boolean isConfigured() {
             return true;
         }
+    }
+
+    public record SentPush(String endpoint, String payload) {
+    }
+
+    /** Servicio push falso: guarda los mensajes; los endpoints que terminan en {@code /gone} responden 410. */
+    public static class PushInbox implements PushGateway {
+
+        private final List<SentPush> sent = new CopyOnWriteArrayList<>();
+
+        @Override
+        public Result send(Target target, byte[] payload, int ttlSeconds, String topic) {
+            if (target.endpoint().endsWith("/gone")) {
+                return Result.GONE;
+            }
+            sent.add(new SentPush(target.endpoint(), new String(payload, StandardCharsets.UTF_8)));
+            return Result.DELIVERED;
+        }
+
+        public List<SentPush> to(String endpoint) {
+            return sent.stream().filter(p -> p.endpoint().equals(endpoint)).toList();
+        }
+    }
+
+    @Bean
+    @Primary
+    PushInbox pushInbox() {
+        return new PushInbox();
     }
 
     @Bean
