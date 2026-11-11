@@ -1,0 +1,227 @@
+<div class="page">
+  <header class="page-head">
+    <div class="col">
+      <p class="muted">{{ title() }}</p>
+      <h1>Pagos</h1>
+    </div>
+    <span class="head-actions">
+      <app-live-badge />
+      @if (family.isManager()) {
+        <button class="btn" type="button" (click)="form().show(null, selectedDay())">
+          <app-icon name="plus" [size]="18" /> Pago
+        </button>
+      }
+    </span>
+  </header>
+
+  @if (error()) {
+    <div class="alert error" role="alert">
+      <span class="grow">{{ error() }}</span>
+      <button class="icon-btn" type="button" aria-label="Cerrar" (click)="error.set(null)">
+        <app-icon name="x" [size]="18" />
+      </button>
+    </div>
+  }
+
+  <div class="top">
+    <section class="hero">
+      <span class="label">Por pagar en {{ title().toLowerCase() }}</span>
+      <b class="big">{{ toPay() }}</b>
+      <span class="sub">Pagado: {{ paidTotal() }}</span>
+      <div
+        class="bar"
+        role="progressbar"
+        [attr.aria-valuenow]="progress()"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        <i [style.width.%]="progress()"></i>
+      </div>
+      @if (overdue().length) {
+        <span class="warn"
+          ><app-icon name="alert" [size]="16" /> {{ overdue().length }} vencido(s)</span
+        >
+      }
+    </section>
+
+    <section class="card cal" aria-label="Calendario del mes">
+      <div class="cal-head">
+        <button class="icon-btn" type="button" aria-label="Mes anterior" (click)="move(-1)">
+          <app-icon name="back" />
+        </button>
+        <b>{{ title() }}</b>
+        <button class="icon-btn" type="button" aria-label="Mes siguiente" (click)="move(1)">
+          <app-icon name="next" />
+        </button>
+      </div>
+      <div class="grid">
+        @for (l of letters; track $index) {
+          <span class="l">{{ l }}</span>
+        }
+        @for (c of cells(); track c.key) {
+          <button
+            type="button"
+            class="d"
+            [class.out]="!c.inMonth"
+            [class.today]="c.key === today()"
+            [class.on]="c.key === selectedDay()"
+            [disabled]="!c.inMonth"
+            (click)="toggleDay(c.key)"
+          >
+            {{ c.n }}
+            @if (c.status) {
+              <i [class]="c.status"></i>
+            }
+          </button>
+        }
+      </div>
+      @if (selectedDay()) {
+        <button class="link-btn" type="button" (click)="selectedDay.set(null)">
+          Ver todo el mes
+        </button>
+      }
+    </section>
+  </div>
+
+  @if (!monthData()) {
+    <div class="card empty">Cargando…</div>
+  } @else {
+    @if (overdue().length && !selectedDay()) {
+      <section>
+        <h2 class="sec">Vencidos</h2>
+        <div class="list">
+          @for (o of overdue(); track o.paymentId + o.dueOn) {
+            <ng-container *ngTemplateOutlet="row; context: { $implicit: o }" />
+          }
+        </div>
+      </section>
+    }
+    <section>
+      <h2 class="sec">Por pagar</h2>
+      <div class="list">
+        @for (o of pending(); track o.paymentId + o.dueOn) {
+          <ng-container *ngTemplateOutlet="row; context: { $implicit: o }" />
+        } @empty {
+          <div class="card empty">
+            Nada pendiente{{ selectedDay() ? ' ese día' : ' este mes' }}.
+          </div>
+        }
+      </div>
+    </section>
+    @if (paid().length) {
+      <section>
+        <h2 class="sec">Pagados</h2>
+        <div class="list">
+          @for (o of paid(); track o.paymentId + o.dueOn) {
+            <ng-container *ngTemplateOutlet="row; context: { $implicit: o }" />
+          }
+        </div>
+      </section>
+    }
+  }
+</div>
+
+<ng-template #row let-o>
+  <article class="item" [class.paid]="o.status === 'PAID'" [class.late]="o.status === 'OVERDUE'">
+    <span class="ico"><app-icon name="receipt" [size]="20" /></span>
+    <button type="button" class="body" (click)="edit(o)" [disabled]="!family.isManager()">
+      <b>{{ o.name }}</b>
+      <span class="meta">{{ due(o) }} · {{ repeat(o) }}</span>
+    </button>
+    @if (o.responsibleId) {
+      <app-avatar [member]="family.member(o.responsibleId)" [size]="26" />
+    }
+    <b class="amt">{{ amount(o) }}</b>
+    <span class="acts">
+      @if (o.status === 'PAID') {
+        @if (o.receiptFileId) {
+          <button
+            class="icon-btn"
+            type="button"
+            title="Ver comprobante"
+            aria-label="Ver comprobante"
+            (click)="receipt(o)"
+          >
+            <app-icon name="clip" [size]="18" />
+          </button>
+        } @else {
+          <label class="icon-btn" title="Adjuntar comprobante">
+            <app-icon name="clip" [size]="18" />
+            <input
+              class="sr-only"
+              type="file"
+              accept="application/pdf,image/*"
+              (change)="attach(o, $event)"
+            />
+            <span class="sr-only">Adjuntar comprobante</span>
+          </label>
+        }
+        <button class="btn ghost small" type="button" (click)="unpay(o)" [disabled]="busy()">
+          Deshacer
+        </button>
+      } @else {
+        <button class="btn small" type="button" (click)="openPay(o)" [disabled]="busy()">
+          <app-icon name="check" [size]="16" /> Pagado
+        </button>
+      }
+    </span>
+  </article>
+</ng-template>
+
+<dialog #pay class="sheet" (close)="paying.set(null)">
+  @if (paying(); as o) {
+    <form class="sheet-body" (ngSubmit)="confirmPay()">
+      <h2>Marcar pagado</h2>
+      <p class="muted">{{ o.name }} · {{ due(o) }}</p>
+      @if (error()) {
+        <div class="alert error" role="alert">{{ error() }}</div>
+      }
+      <div class="two">
+        <div class="field">
+          <label for="pay-amount">Monto pagado ({{ o.currency }})</label>
+          <input
+            id="pay-amount"
+            class="input"
+            type="number"
+            min="0"
+            step="0.01"
+            name="amount"
+            [(ngModel)]="p.amount"
+          />
+        </div>
+        <div class="field">
+          <label for="pay-date">Fecha de pago</label>
+          <input
+            id="pay-date"
+            class="input"
+            type="date"
+            name="paidOn"
+            [max]="today()"
+            [(ngModel)]="p.paidOn"
+          />
+        </div>
+      </div>
+      <div class="field">
+        <label for="pay-note">Nota (opcional)</label>
+        <input id="pay-note" class="input" name="note" maxlength="500" [(ngModel)]="p.note" />
+      </div>
+      <div class="field">
+        <label for="pay-file">Comprobante (opcional, PDF o imagen, hasta 10 MB)</label>
+        <input
+          id="pay-file"
+          class="input"
+          type="file"
+          accept="application/pdf,image/*"
+          (change)="pickFile($event)"
+        />
+      </div>
+      <div class="sheet-actions">
+        <span class="grow"></span>
+        <button class="btn ghost" type="button" (click)="closePay()">Cancelar</button>
+        <button class="btn" type="submit" [disabled]="busy()">Confirmar pago</button>
+      </div>
+    </form>
+  }
+</dialog>
+
+<app-payment-form />

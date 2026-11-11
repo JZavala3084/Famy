@@ -6,7 +6,7 @@ import { Subject, firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
 import { AppConfig } from './config';
 import { FamilyService } from './family.service';
-import { ChangeEvent, ChangePage } from './models';
+import { ChangeEvent, ChangePage, LiveNotification } from './models';
 
 export type LiveStatus = 'offline' | 'connecting' | 'live';
 
@@ -47,6 +47,8 @@ export class RealtimeService {
   readonly events = new Subject<ChangeEvent>();
   /** Se emite cuando hay que recargar todo desde REST. */
   readonly resync = new Subject<void>();
+  /** Notificaciones personales que llegan por `/user/queue/notifications`. */
+  readonly notifications = new Subject<LiveNotification>();
   /** Actividad reciente de la familia (más nuevo primero). */
   readonly feed = signal<ChangeEvent[]>([]);
 
@@ -125,13 +127,21 @@ export class RealtimeService {
   private onConnect(client: Client, familyId: string): void {
     this.catchingUp = true;
     this.buffer = [];
-    client.subscribe(`/topic/families/${familyId}`, (msg: IMessage) => {
+    const onChange = (msg: IMessage) => {
       const evt = JSON.parse(msg.body) as ChangeEvent;
       if (this.catchingUp) {
         this.buffer.push(evt);
       } else {
         this.accept(evt);
       }
+    };
+    client.subscribe(`/topic/families/${familyId}`, onChange);
+    // Pagos y presupuesto: solo los adultos (el servidor rechaza la suscripción de un CHILD).
+    if (this.family.isAdult()) {
+      client.subscribe(`/topic/families/${familyId}/adults`, onChange);
+    }
+    client.subscribe('/user/queue/notifications', (msg: IMessage) => {
+      this.notifications.next(JSON.parse(msg.body) as LiveNotification);
     });
     this.catchUp(familyId)
       .then(() => {

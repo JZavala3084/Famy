@@ -1,4 +1,14 @@
-import { ChangeEvent, Chore, ChoreCompletion, ShoppingItem, ShoppingList } from '../../core/models';
+import {
+  CalendarEvent,
+  Celebration,
+  ChangeEvent,
+  Chore,
+  ChoreCompletion,
+  Payment,
+  PaymentOccurrence,
+  ShoppingItem,
+  ShoppingList,
+} from '../../core/models';
 
 /** Texto de la actividad reciente a partir de un evento del change_log (sin el nombre de quién lo hizo). */
 export function describeChange(
@@ -33,6 +43,30 @@ export function describeChange(
       const done = p as unknown as ChoreCompletion;
       const title = choreTitle(done.choreId);
       return title ? `completó «${title}»` : 'completó una tarea';
+    }
+    case 'calendar.event': {
+      const ev = p as unknown as CalendarEvent;
+      if (e.op === 'C') return `agendó «${ev.title}»`;
+      if (e.op === 'D') return 'borró un evento de la agenda';
+      return `actualizó «${ev.title}» en la agenda`;
+    }
+    case 'payment': {
+      const pay = p as unknown as Payment;
+      if (e.op === 'C') return `agregó el pago «${pay.name}»`;
+      if (e.op === 'D') return 'borró un pago';
+      return null; // Cambia también al pagar (próximo vencimiento): ya lo cuenta payment.occurrence.
+    }
+    case 'payment.occurrence': {
+      const o = p as unknown as PaymentOccurrence | null;
+      if (e.op === 'D') return o?.name ? `desmarcó el pago «${o.name}»` : 'desmarcó un pago';
+      if (e.op === 'C') return `pagó «${o?.name ?? 'un pago'}»`;
+      return o?.receiptFileId ? `adjuntó el comprobante de «${o.name}»` : null;
+    }
+    case 'celebration': {
+      const c = p as unknown as Celebration;
+      if (e.op === 'C' && !c.userId) return `agregó la fecha «${c.personName}»`;
+      if (e.op === 'D') return 'borró una fecha especial';
+      return null;
     }
     case 'family.member': {
       const m = p as { active?: boolean };

@@ -9,17 +9,21 @@ import {
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { FamilyService } from '../../core/family.service';
+import { NotificationsService } from '../../core/notifications.service';
 import { RealtimeService } from '../../core/realtime.service';
 import { Avatar } from '../../shared/avatar';
 import { Icon, IconName } from '../../shared/icon';
 import { LiveBadge } from '../../shared/live-badge';
 import { Logo } from '../../shared/logo';
+import { Bell } from '../notifications/bell';
 
 interface NavItem {
   label: string;
   icon: IconName;
   link: string;
   soon?: boolean;
+  /** Solo para adultos (los hijos no ven los pagos). */
+  adults?: boolean;
 }
 
 export const NAV: NavItem[] = [
@@ -28,38 +32,41 @@ export const NAV: NavItem[] = [
   { label: 'Tareas', icon: 'tasks', link: '/tareas' },
   { label: 'Presupuesto', icon: 'wallet', link: '/pronto/presupuesto', soon: true },
   { label: 'Recetas', icon: 'book', link: '/pronto/recetas', soon: true },
-  { label: 'Horarios', icon: 'clock', link: '/pronto/horarios', soon: true },
-  { label: 'Pagos', icon: 'receipt', link: '/pronto/pagos', soon: true },
-  { label: 'Cumpleaños', icon: 'gift', link: '/pronto/cumpleanos', soon: true },
+  { label: 'Agenda', icon: 'calendar', link: '/agenda' },
+  { label: 'Pagos', icon: 'receipt', link: '/pagos', adults: true },
+  { label: 'Cumpleaños', icon: 'gift', link: '/cumpleanos' },
   { label: 'Salud', icon: 'pill', link: '/pronto/salud', soon: true },
   { label: 'Familia', icon: 'family', link: '/familia' },
 ];
 
-const TABS: NavItem[] = [
+export const TABS: NavItem[] = [
   { label: 'Inicio', icon: 'home', link: '/' },
   { label: 'Compras', icon: 'cart', link: '/compras' },
   { label: 'Tareas', icon: 'tasks', link: '/tareas' },
-  { label: 'Familia', icon: 'family', link: '/familia' },
-  { label: 'Ajustes', icon: 'settings', link: '/configuracion' },
+  { label: 'Agenda', icon: 'calendar', link: '/agenda' },
+  { label: 'Más', icon: 'grid', link: '/mas' },
 ];
 
 /** Panel familiar: menú lateral en escritorio, barra inferior en móvil (09 · Diseño UI). */
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Logo, Avatar, LiveBadge],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Logo, Avatar, LiveBadge, Bell],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a class="skip" href="#contenido">Saltar al contenido</a>
     <aside class="side">
-      <a class="brand" routerLink="/">
-        <app-logo [size]="40" />
-        <span>
-          <b>Famy</b>
-          <span class="muted small">{{ family.current()?.name }}</span>
-        </span>
-      </a>
+      <div class="side-head">
+        <a class="brand grow" routerLink="/">
+          <app-logo [size]="40" />
+          <span>
+            <b>Famy</b>
+            <span class="muted small">{{ family.current()?.name }}</span>
+          </span>
+        </a>
+        <app-bell align="start" />
+      </div>
       <nav aria-label="Secciones">
-        @for (n of nav; track n.link) {
+        @for (n of nav(); track n.link) {
           <a
             [routerLink]="n.link"
             routerLinkActive="active"
@@ -93,7 +100,10 @@ const TABS: NavItem[] = [
         <app-logo [size]="34" />
         <b>{{ family.current()?.name || 'Famy' }}</b>
       </a>
-      <app-live-badge />
+      <span class="top-actions">
+        <app-live-badge />
+        <app-bell />
+      </span>
     </header>
 
     <main id="contenido" class="content" tabindex="-1">
@@ -207,6 +217,16 @@ const TABS: NavItem[] = [
       flex: 1;
       min-width: 0;
     }
+    .side-head {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
     .ellipsis {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -305,7 +325,8 @@ export class Shell {
   private readonly realtime = inject(RealtimeService);
   private readonly router = inject(Router);
   protected readonly family = inject(FamilyService);
-  protected readonly nav = NAV;
+  private readonly notifications = inject(NotificationsService);
+  protected readonly nav = computed(() => NAV.filter((n) => !n.adults || this.family.isAdult()));
   protected readonly tabs = TABS;
   protected readonly me = computed(() => {
     const id = this.auth.profile()?.id;
@@ -317,10 +338,13 @@ export class Shell {
       const id = this.family.current()?.id;
       if (id) this.realtime.start(id);
     });
+    this.notifications.start();
     inject(DestroyRef).onDestroy(() => this.realtime.stop());
   }
 
   async logout() {
+    await this.notifications.forgetBrowser().catch(() => undefined);
+    this.notifications.clear();
     this.realtime.stop();
     await this.auth.logout();
     this.family.clear();

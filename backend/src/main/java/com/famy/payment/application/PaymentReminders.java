@@ -12,6 +12,7 @@ import com.famy.shared.time.Money;
 import com.famy.shared.time.Spanish;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +73,7 @@ class PaymentReminders implements ReminderSource {
                 : "Vence en %d días (%s)".formatted(daysBefore, Spanish.day(due, today));
         return new Reminder("payment:%s:%s:%d".formatted(p.getId(), due, daysBefore), p.getFamilyId(), recipients,
                 NotificationType.PAYMENT, "Pago: " + p.getName(),
-                when + " · " + Money.format(p.getAmount(), p.getCurrency()), "/pagos", fireAt);
+                when + " · " + Money.format(p.getAmount(), p.getCurrency()),
+                "/pagos?mes=" + YearMonth.from(due), fireAt);
     }
 }

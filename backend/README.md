@@ -33,6 +33,10 @@ En `dev` la clave JWT se genera al arrancar (las sesiones se pierden al reinicia
 | realtime | `com.famy.realtime` | WebSocket STOMP en `/ws`, `change_log` y `GET /changes` para ponerse al día |
 | shopping | `com.famy.shopping` | Listas de compras, ítems, marcar comprados, limpiar, reordenar, sugerencias |
 | chore | `com.famy.chore` | Tareas del hogar con repetición (RRULE), rotación, historial y puntaje semanal |
+| calendar | `com.famy.calendar` | Eventos con RRULE, participantes, recordatorios y cancelación de un solo día |
+| payment | `com.famy.payment` | Pagos recurrentes, vencimientos, marcar pagado y comprobantes (solo adultos) |
+| celebration | `com.famy.celebration` | Cumpleaños (de los perfiles y de no miembros), aniversarios e ideas de regalo |
+| notification | `com.famy.notification` | Centro de avisos, push web (VAPID), preferencias y el job de recordatorios |
 
 Cada módulo tiene `api` (controladores y DTO), `application` (casos de uso), `domain` (entidades) e `infrastructure` (repositorios y adaptadores). Lo que otros módulos pueden usar vive en el paquete raíz del módulo (p. ej. `identity.UserDirectory`, `family.FamilyMembership`, `family.FamilyRole`). Lo transversal (`DomainChange`, `ChangePublisher`, `Recurrence`) vive en `shared`.
 
@@ -85,6 +89,35 @@ Todos bajo `/api/v1/families/{familyId}` y solo para miembros activos (si no, 40
 
 Las ediciones aceptan `version` opcional: si no coincide con la del servidor responde 409 `version_conflict`.
 
+## Endpoints (fase 5)
+
+Bajo `/api/v1/families/{familyId}` salvo los de avisos.
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/events?from=&to=&participantId=` | Eventos y sus ocurrencias en el rango (fechas `YYYY-MM-DD`, zona de la familia, máx. 400 días) |
+| POST · PUT · DELETE | `/events[/{eventId}]` | Crear / editar (toda la serie) / borrar. CHILD solo los suyos |
+| DELETE | `/events/{eventId}/occurrences/{start}` | Cancelar un solo día de un evento que se repite (EXDATE) |
+| GET · POST | `/payments` | Pagos (con `nextDueOn` y `overdueCount`) / crear (OWNER y ADMIN) |
+| PUT · DELETE | `/payments/{paymentId}` | Editar / borrar (OWNER y ADMIN) |
+| GET | `/payments/occurrences?from=&to=` | Vencimientos del rango con estado `PENDING`, `OVERDUE` o `PAID` |
+| POST · DELETE | `/payments/{paymentId}/occurrences/{dueOn}/pay` | Marcar pagado (`amountPaid`, `paidOn`, `note` opcionales) / deshacer |
+| POST · GET | `/payments/{paymentId}/occurrences/{dueOn}/receipt` | Subir comprobante (multipart `file`, PDF o imagen, 10 MB) / descargarlo |
+| GET · POST | `/celebrations` | Fechas con `nextDate`, `daysUntil` y `turning`; los miembros con fecha en su perfil salen con `id` nulo y se «guardan» con POST `{userId}` |
+| PUT · DELETE | `/celebrations/{id}` | Editar / borrar. La persona festejada recibe `giftIdeas: null` y `giftIdeasHidden: true` |
+| GET | `/api/v1/notifications?limit=` | Avisos del usuario y `unread` |
+| POST | `/api/v1/notifications/{id}/read` · `/read-all` | Marcar leídos |
+| GET | `/api/v1/notifications/push` | `{enabled, publicKey, subscriptions}` (clave VAPID pública) |
+| POST · DELETE | `/api/v1/notifications/push/subscriptions` | Registrar / quitar la suscripción push de este navegador |
+| POST | `/api/v1/notifications/push/test` | Aviso de prueba |
+| GET · PUT | `/api/v1/notifications/preferences` | `{mutedTypes, quietFrom, quietTo}` |
+
+**Recordatorios.** Cada módulo expone un `ReminderSource` que calcula al vuelo lo que debe sonar en una ventana de tiempo (eventos: los minutos elegidos; pagos: N días antes y el día, a las 9:00 de la familia; cumpleaños: 7, 1 y 0 días antes, a las 9:00, para todos menos la persona festejada). `ReminderJob` corre cada minuto (`famy.reminders.interval`), deduplica con una llave estable en `reminder_log` y recupera hasta 6 h si la API estuvo apagada. Así no hay que reprogramar nada al editar o borrar.
+
+**Push web.** RFC 8291 (aes128gcm) y VAPID RFC 8292 con la criptografía del JDK. La llave privada se genera sola en `${FAMY_DATA_DIR}/vapid-private.pem` (o se indica con `famy.push.vapid-private-key-file`). Las suscripciones que responden 404/410 se borran. Se respetan los tipos silenciados y las horas de silencio (el aviso queda en la campana).
+
+**Archivos.** Los comprobantes se guardan en `${FAMY_DATA_DIR}/files/<familia>/<id>` (por defecto `./data`); el tipo se detecta por los primeros bytes, no por lo que dice el cliente.
+
 ## Tiempo real
 
 1. Al abrir la app: `GET /changes/cursor` → guardar el cursor, cargar los datos por REST.
@@ -99,7 +132,9 @@ Las ediciones aceptan `version` opcional: si no coincide con la del servidor res
 
    - `id` es el cursor: guardar el mayor visto. `version`: ignorar eventos con versión menor a la que ya se tiene.
    - En `op: "D"` el payload es `{ "id": … }`.
-   - Entidades: `shopping.list`, `shopping.item`, `chore`, `chore.completion`, `family.member` (este último trae `{userId, role, active}`; recargar el detalle de la familia).
+   - Entidades: `shopping.list`, `shopping.item`, `chore`, `chore.completion`, `calendar.event`, `celebration`, `family.member` (este último trae `{userId, role, active}`; recargar el detalle de la familia). En `celebration` de un miembro no viajan las ideas de regalo: el cliente vuelve a pedir la lista.
+   - Los adultos se suscriben además a `/topic/families/{familyId}/adults`, que lleva `payment` y `payment.occurrence` (los hijos no ven los pagos; `GET /changes` también los filtra por rol).
+   - Avisos personales: `SUBSCRIBE /user/queue/notifications` recibe `{notification, unread}` al instante.
 5. Al reconectar: `GET /changes?since=<cursor>` hasta que `hasMore` sea `false`. Con 410 `resync_required`, recargar todo.
 
 El servidor cierra el WebSocket con código **4401** cuando vence el access token (reconectar con uno nuevo tras `/auth/refresh`) y con **4403** cuando el usuario sale o es expulsado de la familia.

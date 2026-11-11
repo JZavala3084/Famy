@@ -7,9 +7,6 @@ const PHASES: Record<string, string> = {
   presupuesto:
     'Fase 6: presupuesto familiar por categorías, movimientos y alertas al exceder un límite.',
   recetas: 'Fase 6: recetas de la familia y «Añadir ingredientes faltantes a Compras».',
-  horarios: 'Fase 5: agenda semanal por miembro con eventos que se repiten.',
-  pagos: 'Fase 5: calendario de pagos con recordatorios y responsables.',
-  cumpleanos: 'Fase 5: cumpleaños con recordatorios 7 y 1 día antes e ideas de regalo.',
   salud: 'Fase 6b: condiciones, medicamentos con horarios y recordatorios de tomas.',
 };
 

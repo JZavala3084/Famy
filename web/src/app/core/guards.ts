@@ -33,3 +33,11 @@ export const noFamilyGuard: CanActivateFn = async () => {
   const list = await families().catch(() => []);
   return list.length ? router.createUrlTree(['/']) : true;
 };
+
+/** Secciones solo para adultos (los hijos no ven los pagos). */
+export const adultGuard: CanActivateFn = async () => {
+  const router = inject(Router);
+  const family = inject(FamilyService);
+  await families().catch(() => []);
+  return family.isAdult() ? true : router.createUrlTree(['/']);
+};

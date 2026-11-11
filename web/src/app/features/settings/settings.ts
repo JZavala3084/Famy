@@ -15,7 +15,9 @@ import { errorMessage } from '../../core/problem';
 import { RealtimeService } from '../../core/realtime.service';
 import { Icon } from '../../shared/icon';
 import { PasswordStrength, passwordOk } from '../auth/password-strength';
+import { NotificationSettings } from '../notifications/notification-settings';
 import { CURRENCIES } from '../onboarding/onboarding';
+import { NotificationsService } from '../../core/notifications.service';
 
 const TIMEZONES: string[] = (() => {
   try {
@@ -30,7 +32,7 @@ const TIMEZONES: string[] = (() => {
 /** Configuración (prototipo «Configuracion»): perfil, moneda, zona horaria y seguridad. */
 @Component({
   selector: 'app-settings',
-  imports: [FormsModule, Icon, PasswordStrength],
+  imports: [FormsModule, Icon, PasswordStrength, NotificationSettings],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="page narrow">
@@ -158,6 +160,8 @@ const TIMEZONES: string[] = (() => {
         </form>
       </section>
 
+      <app-notification-settings />
+
       <section class="card">
         <h2>Sesiones</h2>
         <div class="actions start">
@@ -216,6 +220,7 @@ export class Settings {
   protected readonly auth = inject(AuthService);
   private readonly family = inject(FamilyService);
   private readonly realtime = inject(RealtimeService);
+  private readonly notifications = inject(NotificationsService);
   private readonly router = inject(Router);
 
   protected readonly colors = MEMBER_COLORS;
@@ -282,6 +287,8 @@ export class Settings {
   }
 
   async logout(everywhere: boolean) {
+    await this.notifications.forgetBrowser().catch(() => undefined);
+    this.notifications.clear();
     this.realtime.stop();
     await this.auth.logout(everywhere);
     this.family.clear();

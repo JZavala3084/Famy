@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, familyGuard, guestGuard, noFamilyGuard } from './core/guards';
+import { adultGuard, authGuard, familyGuard, guestGuard, noFamilyGuard } from './core/guards';
 
 export const routes: Routes = [
   {
@@ -67,6 +67,29 @@ export const routes: Routes = [
         title: 'Tareas · Famy',
         loadComponent: () => import('./features/chores/chores').then((m) => m.Chores),
       },
+      {
+        path: 'agenda',
+        title: 'Agenda · Famy',
+        loadComponent: () => import('./features/agenda/agenda').then((m) => m.Agenda),
+      },
+      {
+        path: 'pagos',
+        canActivate: [adultGuard],
+        title: 'Pagos · Famy',
+        loadComponent: () => import('./features/payments/payments').then((m) => m.Payments),
+      },
+      {
+        path: 'cumpleanos',
+        title: 'Cumpleaños · Famy',
+        loadComponent: () =>
+          import('./features/celebrations/celebrations').then((m) => m.Celebrations),
+      },
+      {
+        path: 'mas',
+        title: 'Más · Famy',
+        loadComponent: () => import('./features/more/more').then((m) => m.More),
+      },
+      { path: 'horarios', redirectTo: 'agenda' },
       {
         path: 'familia',
         title: 'Familia · Famy',

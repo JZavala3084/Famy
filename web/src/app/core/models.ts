@@ -182,6 +182,183 @@ export interface Scoreboard {
   members: { userId: string; displayName: string; points: number; completions: number }[];
 }
 
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  location: string | null;
+  startsAt: string;
+  endsAt: string;
+  allDay: boolean;
+  rrule: string | null;
+  color: string | null;
+  participantIds: string[];
+  reminderMinutes: number[];
+  excludedStarts: string[];
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  version: number;
+}
+
+export interface EventInput {
+  title: string;
+  description?: string | null;
+  location?: string | null;
+  startsAt: string;
+  endsAt?: string | null;
+  allDay?: boolean;
+  rrule?: string | null;
+  color?: string | null;
+  participantIds?: string[];
+  reminderMinutes?: number[];
+  version?: number;
+}
+
+export interface EventOccurrence {
+  eventId: string;
+  start: string;
+  end: string;
+}
+
+export interface EventRange {
+  from: string;
+  to: string;
+  events: CalendarEvent[];
+  occurrences: EventOccurrence[];
+}
+
+export interface Payment {
+  id: string;
+  name: string;
+  amount: number;
+  currency: string;
+  rrule: string | null;
+  firstDueOn: string;
+  remindDaysBefore: number;
+  responsibleId: string | null;
+  category: string | null;
+  notes: string | null;
+  nextDueOn: string | null;
+  overdueCount: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  version: number;
+}
+
+export interface PaymentInput {
+  name: string;
+  amount: number;
+  currency?: string | null;
+  rrule?: string | null;
+  firstDueOn: string;
+  remindDaysBefore?: number;
+  responsibleId?: string | null;
+  category?: string | null;
+  notes?: string | null;
+  version?: number;
+}
+
+export type PaymentStatus = 'PENDING' | 'PAID' | 'OVERDUE';
+
+export interface PaymentOccurrence {
+  id: string | null;
+  paymentId: string;
+  name: string;
+  amount: number;
+  currency: string;
+  dueOn: string;
+  status: PaymentStatus;
+  responsibleId: string | null;
+  category: string | null;
+  paidOn: string | null;
+  paidBy: string | null;
+  amountPaid: number | null;
+  note: string | null;
+  receiptFileId: string | null;
+}
+
+export interface OccurrenceRange {
+  from: string;
+  to: string;
+  today: string;
+  occurrences: PaymentOccurrence[];
+}
+
+export type CelebrationType = 'BIRTHDAY' | 'ANNIVERSARY' | 'OTHER';
+
+export interface GiftIdea {
+  text: string;
+  done: boolean;
+}
+
+export interface Celebration {
+  id: string | null;
+  type: CelebrationType;
+  personName: string | null;
+  userId: string | null;
+  month: number | null;
+  day: number | null;
+  year: number | null;
+  notes: string | null;
+  giftIdeas: GiftIdea[] | null;
+  giftIdeasHidden: boolean;
+  nextDate: string | null;
+  daysUntil: number | null;
+  turning: number | null;
+  createdBy: string | null;
+  updatedAt: string | null;
+  version: number;
+}
+
+export interface CelebrationInput {
+  type?: CelebrationType;
+  personName?: string | null;
+  userId?: string | null;
+  month?: number | null;
+  day?: number | null;
+  year?: number | null;
+  notes?: string | null;
+  giftIdeas?: GiftIdea[];
+  version?: number;
+}
+
+export type NotificationType = 'EVENT' | 'PAYMENT' | 'CELEBRATION' | 'SYSTEM';
+
+export interface AppNotification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  body: string | null;
+  link: string | null;
+  familyId: string | null;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface NotificationPage {
+  items: AppNotification[];
+  unread: number;
+}
+
+export interface LiveNotification {
+  notification: AppNotification;
+  unread: number;
+}
+
+export interface PushConfig {
+  enabled: boolean;
+  publicKey: string;
+  subscriptions: number;
+}
+
+export interface NotificationPreferences {
+  mutedTypes: NotificationType[];
+  quietFrom: string | null;
+  quietTo: string | null;
+}
+
 export interface ChangeEvent {
   id: number;
   type: string;

@@ -34,6 +34,11 @@ const ICONS = {
   more: 'M5 12h.01 M12 12h.01 M19 12h.01',
   alert: 'M12 3l10 18H2z M12 10v4 M12 17.5v.01',
   calendar: 'M4 5h16v16H4z M4 10h16 M9 3v4 M15 3v4',
+  bell: 'M6 16V11a6 6 0 0 1 12 0v5l2 2H4z M10 20a2 2 0 0 0 4 0',
+  next: 'M9 18l6-6-6-6',
+  pin: 'M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z M12 12.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5z',
+  clip: 'M20 11.5l-8.5 8.5a5 5 0 0 1-7-7L13 4.5a3.5 3.5 0 0 1 5 5L9.5 18a2 2 0 0 1-3-3l8-8',
+  grid: 'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z',
 } as const;
 
 export type IconName = keyof typeof ICONS;

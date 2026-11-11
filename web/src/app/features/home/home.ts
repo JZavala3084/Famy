@@ -10,7 +10,15 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
-import { longToday, relativeTime } from '../../core/dates';
+import {
+  addDays,
+  addMonths,
+  dayKey,
+  formatDate,
+  longToday,
+  monthStart,
+  relativeTime,
+} from '../../core/dates';
 import { FamilyService } from '../../core/family.service';
 import { Chore, ShoppingItem } from '../../core/models';
 import { errorMessage } from '../../core/problem';
@@ -20,10 +28,15 @@ import { Icon } from '../../shared/icon';
 import { LiveBadge } from '../../shared/live-badge';
 import { ChoresStore } from '../chores/chores.store';
 import { ShoppingStore } from '../shopping/shopping.store';
-import { NAV } from '../shell/shell';
+import { AgendaItem, buildAgenda } from '../agenda/agenda-items';
+import { CalendarStore } from '../agenda/calendar.store';
+import { untilLabel } from '../celebrations/celebrations';
+import { CelebrationsStore } from '../celebrations/celebrations.store';
+import { totals } from '../payments/payments';
+import { PaymentsStore } from '../payments/payments.store';
 import { actorOf, describeChange } from './activity';
 
-/** Panel familiar (prototipo «WebInicio»). Los módulos de fases siguientes aparecen como «Pronto». */
+/** Panel familiar (prototipo «WebInicio»): resumen del día, agenda de la semana y actividad en vivo. */
 @Component({
   selector: 'app-home',
   imports: [RouterLink, Avatar, Icon, LiveBadge],
@@ -68,18 +81,28 @@ import { actorOf, describeChange } from './activity';
           <span class="value">{{ chores.todayDone() }} de {{ chores.todayList().length }}</span>
           <span class="sub">{{ pendingChoresText() }}</span>
         </a>
-        <a class="stat" routerLink="/tareas">
-          <span class="label">Mis puntos esta semana</span>
-          <span class="value">{{ myPoints() }}</span>
-          <span class="sub">{{ leaderText() }}</span>
-        </a>
-        <a class="stat accent" routerLink="/familia">
-          <span class="label">Familia</span>
-          <span class="value">{{ family.members().length }}</span>
-          <span class="sub"
-            >{{ family.members().length === 1 ? 'miembro' : 'miembros' }} ·
-            {{ family.current()?.currency }}</span
-          >
+        @if (family.isAdult()) {
+          <a class="stat" routerLink="/pagos">
+            <span class="label">Por pagar este mes</span>
+            <span class="value">{{ toPay() }}</span>
+            <span class="sub">{{ payText() }}</span>
+          </a>
+        } @else {
+          <a class="stat" routerLink="/tareas">
+            <span class="label">Mis puntos esta semana</span>
+            <span class="value">{{ myPoints() }}</span>
+            <span class="sub">{{ leaderText() }}</span>
+          </a>
+        }
+        <a class="stat accent" routerLink="/cumpleanos">
+          <span class="label">Próximo cumpleaños</span>
+          @if (nextCelebration(); as c) {
+            <span class="value">{{ untilLabel(c.daysUntil) }}</span>
+            <span class="sub">{{ c.personName }}</span>
+          } @else {
+            <span class="value">—</span>
+            <span class="sub">Agrega fechas especiales</span>
+          }
         </a>
       </div>
 
@@ -144,15 +167,21 @@ import { actorOf, describeChange } from './activity';
         </section>
 
         <section class="card panel">
-          <div class="card-head"><h2>Próximamente</h2></div>
-          <p class="muted small">Estos módulos llegan en las siguientes fases de Famy.</p>
-          <div class="soon">
-            @for (n of soon; track n.link) {
-              <a [routerLink]="n.link" class="soon-item">
-                <app-icon [name]="n.icon" [size]="18" /> {{ n.label }}
-              </a>
-            }
+          <div class="card-head">
+            <h2>Próximos 7 días</h2>
+            <a class="small" routerLink="/agenda">Ver agenda</a>
           </div>
+          @for (it of upcoming(); track it.key) {
+            <a class="up" [routerLink]="linkFor(it)" [queryParams]="paramsFor(it)">
+              <span class="when" [style.color]="it.color">
+                <b>{{ shortDay(it.day) }}</b>
+                <span>{{ it.time ?? 'Todo el día' }}</span>
+              </span>
+              <span class="grow ellipsis">{{ it.title }}</span>
+            </a>
+          } @empty {
+            <p class="muted small">Nada en la agenda esta semana.</p>
+          }
         </section>
       </div>
     </div>
@@ -274,22 +303,32 @@ import { actorOf, describeChange } from './activity';
       font-size: 13px;
       line-height: 1.45;
     }
-    .soon {
+    .up {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .soon-item {
-      display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: var(--muted);
-      color: var(--text-3);
-      font-size: 13px;
-      font-weight: 600;
+      gap: 12px;
+      padding: 6px 0;
+      color: inherit;
       text-decoration: none;
+      font-size: 14px;
+    }
+    .up + .up {
+      border-top: 1px solid var(--divider);
+    }
+    .when {
+      display: flex;
+      flex-direction: column;
+      width: 86px;
+      flex: none;
+      font-size: 12px;
+    }
+    .when span {
+      color: var(--text-2);
+    }
+    .ellipsis {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   `,
 })
@@ -300,7 +339,10 @@ export class Home {
   private readonly auth = inject(AuthService);
   private readonly realtime = inject(RealtimeService);
 
-  protected readonly soon = NAV.filter((n) => n.soon);
+  private readonly calendar = inject(CalendarStore);
+  private readonly payments = inject(PaymentsStore);
+  private readonly celebrations = inject(CelebrationsStore);
+  protected readonly untilLabel = untilLabel;
   protected readonly error = signal<string | null>(null);
   /** Se refresca cada minuto para «hace N min». */
   private readonly tick = signal(Date.now());
@@ -341,6 +383,53 @@ export class Home {
       : 'Lunes a domingo';
   });
 
+  private readonly today = computed(() => {
+    this.tick();
+    return dayKey(new Date(), this.family.timezone());
+  });
+  private readonly week = computed(() => ({ from: this.today(), to: addDays(this.today(), 6) }));
+  private readonly month = computed(() => {
+    const from = monthStart(this.today());
+    return { from, to: addDays(addMonths(from, 1), -1) };
+  });
+  protected readonly upcoming = computed(() => {
+    const { from, to } = this.week();
+    return buildAgenda({
+      from,
+      to,
+      timeZone: this.family.timezone(),
+      events: this.calendar.range(from, to),
+      payments: this.family.isAdult() ? this.payments.occurrences(from, to)?.occurrences : [],
+      celebrations: this.celebrations.list(),
+      chores: [],
+      memberName: (id) => this.family.member(id).name,
+      memberColor: (id) => this.family.member(id).color,
+    }).slice(0, 7);
+  });
+  private readonly monthPayments = computed(() => {
+    const { from, to } = this.month();
+    return this.payments.occurrences(from, to)?.occurrences ?? [];
+  });
+  protected readonly toPay = computed(() =>
+    totals(
+      this.monthPayments().filter((o) => o.status !== 'PAID'),
+      this.family.current()?.currency ?? 'USD',
+    ),
+  );
+  protected readonly payText = computed(() => {
+    const list = this.monthPayments();
+    const late = list.filter((o) => o.status === 'OVERDUE').length;
+    const left = list.filter((o) => o.status !== 'PAID').length;
+    if (late) return `${late} vencido(s)`;
+    return left ? `${left} pendiente(s)` : 'Todo pagado';
+  });
+  protected readonly nextCelebration = computed(
+    () =>
+      [...(this.celebrations.list() ?? [])]
+        .filter((c) => c.daysUntil !== null)
+        .sort((a, b) => a.daysUntil! - b.daysUntil!)[0] ?? null,
+  );
+
   protected readonly feed = computed(() => {
     this.tick();
     const title = (id: string) => this.chores.all().find((c) => c.id === id)?.title ?? null;
@@ -364,8 +453,33 @@ export class Home {
       const l = this.firstList();
       if (l) untracked(() => this.shopping.loadItems(l.id).catch(fail));
     });
+    this.celebrations.load().catch(fail);
+    effect(() => {
+      const w = this.week();
+      const m = this.month();
+      untracked(() => {
+        this.calendar.load(w.from, w.to).catch(fail);
+        this.payments.load(w.from, w.to).catch(fail);
+        this.payments.load(m.from, m.to).catch(fail);
+      });
+    });
     const timer = setInterval(() => this.tick.set(Date.now()), 60_000);
     inject(DestroyRef).onDestroy(() => clearInterval(timer));
+  }
+
+  protected shortDay(day: string): string {
+    if (day === this.today()) return 'Hoy';
+    if (day === addDays(this.today(), 1)) return 'Mañana';
+    return formatDate(day, { weekday: 'short', day: 'numeric' });
+  }
+
+  protected linkFor(it: AgendaItem): string {
+    return it.kind === 'payment' ? '/pagos' : it.kind === 'celebration' ? '/cumpleanos' : '/agenda';
+  }
+
+  protected paramsFor(it: AgendaItem): Record<string, string> {
+    if (it.kind === 'payment') return { mes: it.day.slice(0, 7) };
+    return it.kind === 'event' ? { dia: it.day } : {};
   }
 
   /** Quién la hizo hoy o, si falta, a quién le toca. */
