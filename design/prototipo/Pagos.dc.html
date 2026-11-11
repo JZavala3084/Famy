@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Calendario de pagos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E6B5E}a:hover{color:#15524A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F5F1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1B1D22; display: flex; flex-direction: column">
+  <main style="flex: 1; min-height: 0; overflow: hidden; padding: 20px 20px 12px; display: flex; flex-direction: column; gap: 14px">
+    <header style="display: flex; align-items: center; gap: 12px">
+      <a href="Inicio.dc.html" aria-label="Volver al inicio" style="width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; border: 1px solid #E4E2DC; display: flex; align-items: center; justify-content: center; color: #1B1D22; flex: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+      </a>
+      <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; flex: 1">Pagos</h1>
+      <span style="font-size: 13px; font-weight: 600; color: #5E6470">Por pagar <b style="color: #1B1D22">$12,370</b></span>
+    </header>
+
+    <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 700">Noviembre 2026</h2>
+        <div style="display: flex; gap: 6px">
+          <button type="button" aria-label="Mes anterior" style="width: 44px; height: 36px; border: 1px solid #E4E2DC; border-radius: 10px; background: #FFFFFF; color: #1B1D22; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <button type="button" aria-label="Mes siguiente" style="width: 44px; height: 36px; border: 1px solid #E4E2DC; border-radius: 10px; background: #FFFFFF; color: #1B1D22; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; text-align: center">
+        <sc-for list="{{wk}}" as="w" hint-placeholder-count="7">
+          <span style="font-size: 12px; font-weight: 600; color: #5E6470; padding: 4px 0">{{w}}</span>
+        </sc-for>
+        <sc-for list="{{cells}}" as="c" hint-placeholder-count="36">
+          <span style="height: 36px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px">
+            <span style="width: 30px; height: 30px; border-radius: 15px; background: {{c.bg}}; color: {{c.fg}}; font-size: 14px; font-weight: {{c.weight}}; display: flex; align-items: center; justify-content: center">{{c.n}}</span>
+            <span style="width: 5px; height: 5px; border-radius: 3px; background: {{c.dot}}"></span>
+          </span>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <h2 style="margin: 0; font-size: 16px; font-weight: 700">Próximos</h2>
+      <sc-for list="{{bills}}" as="b" hint-placeholder-count="4">
+        <div style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 14px; padding: 10px 12px">
+          <span style="width: 44px; height: 44px; border-radius: 12px; background: {{b.bg}}; color: {{b.fg}}; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; flex: none">
+            <span style="font-size: 16px; font-weight: 800">{{b.day}}</span>
+            <span style="font-size: 10px; font-weight: 700">NOV</span>
+          </span>
+          <span style="flex: 1; display: flex; flex-direction: column">
+            <span style="font-size: 15px; font-weight: 600">{{b.name}}</span>
+            <span style="font-size: 12px; color: #5E6470">{{b.meta}}</span>
+          </span>
+          <span style="font-size: 15px; font-weight: 700">{{b.amount}}</span>
+        </div>
+      </sc-for>
+    </section>
+  </main>
+  <dc-import name="TabBar" active="finanzas" hint-size="390px,84px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const today = 10;
+    const paid = { 1: 1, 5: 1 };
+    const due = { 15: 1, 18: 1, 22: 1, 28: 1 };
+    const cells = [];
+    for (let i = 0; i < 6; i++) cells.push({ n: '', bg: 'transparent', fg: '#1B1D22', weight: 500, dot: 'transparent' });
+    for (let d = 1; d <= 30; d++) {
+      const isToday = d === today;
+      cells.push({
+        n: d,
+        bg: isToday ? '#1B1D22' : 'transparent',
+        fg: isToday ? '#FFFFFF' : '#1B1D22',
+        weight: isToday || due[d] ? 700 : 500,
+        dot: due[d] ? '#C2562E' : paid[d] ? '#1E6B5E' : 'transparent'
+      });
+    }
+    const soon = { bg: '#FBE9E0', fg: '#9E4220' };
+    const later = { bg: '#F0EEE9', fg: '#1B1D22' };
+    return {
+      wk: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
+      cells,
+      bills: [
+        { day: 15, name: 'Renta', meta: 'En 5 días · Jose paga', amount: '$8,500', ...soon },
+        { day: 18, name: 'Luz', meta: 'Bimestral · domiciliado', amount: '$620', ...later },
+        { day: 22, name: 'Internet', meta: 'Mensual · Ana paga', amount: '$550', ...later },
+        { day: 28, name: 'Colegiatura', meta: 'Sofía y Diego', amount: '$2,700', ...later }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

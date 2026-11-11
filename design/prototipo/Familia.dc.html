@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Tu familia</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E6B5E}a:hover{color:#15524A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F5F1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1B1D22; padding: 40px 24px 28px; display: flex; flex-direction: column; gap: 24px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1E6B5E">Paso 2 de 2</p>
+    <h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.02em">Conecta con tu familia</h1>
+    <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #5E6470">Crea un espacio nuevo o únete con el código que te compartieron.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; background: #ECEAE4; border-radius: 14px">
+    <button type="button" onClick="{{setCrear}}" style="{{crearTab}}">Crear familia</button>
+    <button type="button" onClick="{{setUnirse}}" style="{{unirseTab}}">Unirme</button>
+  </div>
+
+  <sc-if value="{{isCrear}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="fam" style="font-size: 14px; font-weight: 600">Nombre de la familia</label>
+        <input id="fam" type="text" value="Familia Zavala" style="height: 50px; box-sizing: border-box; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 14px; font: inherit; font-size: 16px; background: #FFFFFF; color: #1B1D22">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="famcur" style="font-size: 14px; font-weight: 600">Moneda del presupuesto familiar</label>
+        <select id="famcur" style="height: 50px; box-sizing: border-box; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 12px; font: inherit; font-size: 16px; background: #FFFFFF; color: #1B1D22"><option selected>USD · Dólar estadounidense</option><option>PEN · Sol peruano</option><option>MXN · Peso mexicano</option><option>EUR · Euro</option></select>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <p style="margin: 0; font-size: 14px; font-weight: 600">Color de la familia</p>
+        <div style="display: flex; gap: 12px">
+          <div style="width: 40px; height: 40px; border-radius: 20px; background: #1E6B5E; box-shadow: 0 0 0 3px #F6F5F1, 0 0 0 5px #1B1D22"></div>
+          <div style="width: 40px; height: 40px; border-radius: 20px; background: #2F5DA8"></div>
+          <div style="width: 40px; height: 40px; border-radius: 20px; background: #C2562E"></div>
+          <div style="width: 40px; height: 40px; border-radius: 20px; background: #6B4FA0"></div>
+          <div style="width: 40px; height: 40px; border-radius: 20px; background: #8A6A12"></div>
+        </div>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 16px; padding: 16px; display: flex; gap: 12px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E6B5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8z"></path><path d="M2 21a7 7 0 0 1 14 0"></path><path d="M19 8v6 M16 11h6"></path></svg>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #5E6470">Serás administrador. Al crearla recibirás un código y un QR para invitar a los demás.</p>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isUnirse}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <label for="c1" style="font-size: 14px; font-weight: 600">Código de invitación</label>
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px">
+          <sc-for list="{{code}}" as="c" hint-placeholder-count="8">
+            <input id="c{{$index}}" aria-label="Carácter {{$index}}" type="text" value="{{c.v}}" style="height: 56px; box-sizing: border-box; border: 1px solid {{c.border}}; border-radius: 12px; text-align: center; font: inherit; font-size: 20px; font-weight: 700; background: #FFFFFF; color: #1B1D22; width: 100%; padding: 0">
+          </sc-for>
+        </div>
+      </div>
+      <a href="#" style="height: 50px; border-radius: 14px; border: 1px dashed #1E6B5E; color: #1E6B5E; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6v6H4z M14 4h6v6h-6z M4 14h6v6H4z M14 14h2v2h-2z M18 18h2v2h-2z"></path></svg>
+        Escanear código QR
+      </a>
+      <div style="background: #FBE9E0; border-radius: 16px; padding: 16px; font-size: 14px; line-height: 1.5; color: #7A3418">El administrador de la familia aprobará tu solicitud antes de que veas la información.</div>
+    </div>
+  </sc-if>
+
+  <div style="flex: 1"></div>
+  <a href="Inicio.dc.html" style="height: 52px; border-radius: 14px; background: #1E6B5E; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none">{{cta}}</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mode: 'crear' }; }
+  renderVals() {
+    const crear = this.state.mode === 'crear';
+    const on = 'height: 44px; border: 0; border-radius: 11px; background: #FFFFFF; color: #1B1D22; font: inherit; font-size: 15px; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.08); cursor: pointer';
+    const off = 'height: 44px; border: 0; border-radius: 11px; background: transparent; color: #5E6470; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer';
+    const chars = ['F', 'M', '7', 'K', '2', 'Q', '', ''];
+    return {
+      isCrear: crear,
+      isUnirse: !crear,
+      crearTab: crear ? on : off,
+      unirseTab: crear ? off : on,
+      setCrear: () => this.setState({ mode: 'crear' }),
+      setUnirse: () => this.setState({ mode: 'unirse' }),
+      code: chars.map((v, i) => ({ v, border: i === 6 ? '#1E6B5E' : '#D9D6CF' })),
+      cta: crear ? 'Crear familia' : 'Solicitar unirme'
+    };
+  }
+}
+</script>
+</body>
+</html>

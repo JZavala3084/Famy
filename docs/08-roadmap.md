@@ -44,7 +44,7 @@ flowchart LR
 |---|----------|-----------------------|
 | P-1 | ¿Figma o Canva para el diseño? | Figma (mejor para prototipos y handoff a código) |
 | P-2 | ¿Dominio para el homelab y cómo exponerlo? | Subdominio propio + Cloudflare Tunnel |
-| P-3 | ¿Moneda por defecto? | PEN, configurable por familia |
+| P-3 | ¿Moneda por defecto? | ✅ Decidido: USD por defecto; cada usuario la elige en Configuración (y la familia tiene la suya para el presupuesto compartido) |
 | P-4 | ¿Los hijos ven presupuesto y pagos? | No por defecto, configurable |
 | P-5 | ¿Unirse requiere aprobación del admin? | Sí para código, no para invitación por correo |
 | P-6 | ¿Gradle o Maven para el backend? | Gradle Kotlin DSL (mismo lenguaje que móvil) |

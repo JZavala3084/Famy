@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Tareas del hogar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E6B5E}a:hover{color:#15524A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F5F1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1B1D22; display: flex; flex-direction: column">
+  <main style="flex: 1; min-height: 0; overflow: hidden; padding: 24px 20px 12px; display: flex; flex-direction: column; gap: 16px">
+    <header style="display: flex; align-items: center; justify-content: space-between">
+      <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em">Tareas del hogar</h1>
+      <button type="button" aria-label="Nueva tarea" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #1E6B5E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg>
+      </button>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; background: #ECEAE4; border-radius: 14px">
+      <span style="height: 40px; border-radius: 11px; background: #FFFFFF; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08)">Hoy</span>
+      <span style="height: 40px; border-radius: 11px; font-size: 14px; font-weight: 600; color: #5E6470; display: flex; align-items: center; justify-content: center">Semana</span>
+      <span style="height: 40px; border-radius: 11px; font-size: 14px; font-weight: 600; color: #5E6470; display: flex; align-items: center; justify-content: center">Rotación</span>
+    </div>
+
+    <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
+      <div style="width: 56px; height: 56px; border-radius: 28px; background: conic-gradient(#1E6B5E {{deg}}deg, #E3F0EC 0deg); display: flex; align-items: center; justify-content: center; flex: none">
+        <span style="width: 42px; height: 42px; border-radius: 21px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800">{{done}}/{{total}}</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 15px; font-weight: 700">Progreso de hoy</span>
+        <span style="font-size: 13px; color: #5E6470">Diego lleva la racha: 6 días seguidos</span>
+      </div>
+    </section>
+
+    <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+      <sc-for list="{{tasks}}" as="t" hint-placeholder-count="5">
+        <li>
+          <button type="button" onClick="{{t.toggle}}" style="width: 100%; min-height: 64px; box-sizing: border-box; border: 1px solid #E4E2DC; border-radius: 16px; background: #FFFFFF; font: inherit; color: inherit; display: flex; align-items: center; gap: 12px; padding: 10px 14px; text-align: left; cursor: pointer">
+            <span style="width: 26px; height: 26px; box-sizing: border-box; border-radius: 13px; border: 2px solid {{t.ring}}; background: {{t.fill}}; display: flex; align-items: center; justify-content: center; color: #FFFFFF; flex: none">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+            </span>
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 15px; font-weight: 600; color: {{t.color}}; text-decoration: {{t.deco}}">{{t.name}}</span>
+              <span style="font-size: 12px; color: #5E6470">{{t.meta}}</span>
+            </span>
+            <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #5E6470">
+              <span style="width: 28px; height: 28px; border-radius: 14px; background: {{t.avatar}}; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{t.by}}</span>
+            </span>
+          </button>
+        </li>
+      </sc-for>
+    </ul>
+  </main>
+  <dc-import name="TabBar" active="tareas" hint-size="390px,84px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { done: { 0: true, 1: true, 3: true } }; }
+  renderVals() {
+    const base = [
+      { name: 'Tender camas', meta: 'Diario · 7:30', by: 'S', avatar: '#6B4FA0' },
+      { name: 'Lavar platos del desayuno', meta: 'Diario · rota entre hijos', by: 'D', avatar: '#2F5DA8' },
+      { name: 'Sacar la basura', meta: 'Mar y vie · 20:00', by: 'J', avatar: '#1E6B5E' },
+      { name: 'Alimentar a Max', meta: 'Diario · mañana y noche', by: 'D', avatar: '#2F5DA8' },
+      { name: 'Regar plantas', meta: 'Mar, jue, sáb', by: 'A', avatar: '#C2562E' }
+    ];
+    const done = this.state.done;
+    const tasks = base.map((b, i) => {
+      const d = !!done[i];
+      return {
+        ...b,
+        ring: d ? '#1E6B5E' : '#B9B5AC', fill: d ? '#1E6B5E' : '#FFFFFF',
+        color: d ? '#5E6470' : '#1B1D22', deco: d ? 'line-through' : 'none',
+        toggle: () => this.setState({ done: { ...this.state.done, [i]: !this.state.done[i] } })
+      };
+    });
+    const n = tasks.filter((t) => t.deco === 'line-through').length;
+    return { tasks, done: n, total: tasks.length, deg: Math.round((n / tasks.length) * 360) };
+  }
+}
+</script>
+</body>
+</html>

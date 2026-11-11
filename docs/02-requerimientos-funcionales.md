@@ -10,10 +10,11 @@ Todos los módulos viven dentro de una **familia**. Cada dato pertenece a una fa
 - RF-1.3 Vincular Google a una cuenta creada con correo (mismo correo verificado).
 - RF-1.4 Recuperar contraseña por correo (token de un solo uso, 30 min).
 - RF-1.5 Perfil: nombre, foto, color, fecha de cumpleaños, zona horaria.
+- RF-1.7 Configuración del usuario: moneda (ISO 4217, **USD por defecto**), idioma, zona horaria y preferencias de notificación. La moneda elegida se usa por defecto al registrar montos y para mostrarlos.
 - RF-1.6 Cerrar sesión en este dispositivo o en todos.
 
 ### M2. Familia
-- RF-2.1 Crear familia (nombre, foto, moneda, zona horaria). El creador queda como `OWNER`.
+- RF-2.1 Crear familia (nombre, foto, moneda del presupuesto familiar, zona horaria). La moneda se precarga con la del creador (USD por defecto) y un admin puede cambiarla en Configuración. El creador queda como `OWNER`.
 - RF-2.2 Unirse con código de 8 caracteres o enlace de invitación.
 - RF-2.3 Roles: `OWNER`, `ADMIN`, `MEMBER`, `CHILD`. Detalle en [06 · Familias](06-familias.md).
 - RF-2.4 Salir de la familia, expulsar miembros, transferir propiedad.
@@ -73,6 +74,17 @@ Todos los módulos viven dentro de una **familia**. Cada dato pertenece a una fa
 
 ### M12. Webhooks salientes (post-MVP)
 - RF-12.1 La familia puede registrar URLs que reciben eventos (`shopping.item.created`, `payment.due`...) firmados con HMAC, para integrarse con Home Assistant, n8n, Telegram, etc.
+
+### M13. Salud y medicamentos
+- RF-13.1 Cada miembro registra sus condiciones de salud y alergias (nombre, tipo, notas). Un adulto administrador puede gestionar los datos de los menores.
+- RF-13.2 Medicamentos por persona: nombre, dosis, cantidad por toma, instrucciones (en ayunas, con comida), fecha de inicio y fin o tratamiento continuo.
+- RF-13.3 Frecuencia: todos los días a horas fijas, cada X horas, días específicos de la semana o solo si es necesario.
+- RF-13.4 Notificación push (y alarma local en el móvil) a la hora de cada toma, con acciones «Tomada», «Posponer 10 min» y «Omitir».
+- RF-13.5 Si la toma no se confirma, se repite el aviso (configurable) y, opcionalmente, se avisa a un adulto de la familia tras 30 min.
+- RF-13.6 Historial de tomas (tomada, omitida, atrasada) por día.
+- RF-13.7 Control de existencias: al llegar al mínimo configurado se avisa y se agrega el medicamento a la lista de Compras › Farmacia.
+- RF-13.8 Visibilidad por registro: solo yo, adultos de la familia o toda la familia.
+- RF-13.9 Los datos de salud se cifran en reposo a nivel de columna y cada acceso queda en `audit_log`.
 
 ## Reglas generales
 - Toda entidad registra `created_by`, `created_at`, `updated_at`.

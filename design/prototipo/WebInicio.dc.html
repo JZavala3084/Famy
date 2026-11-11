@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy Web · Panel familiar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E6B5E}a:hover{color:#15524A}
+</style>
+</helmet>
+<div style="min-height: 100vh; box-sizing: border-box; background: #F6F5F1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1B1D22; display: flex; flex-wrap: wrap; align-items: stretch">
+  <aside style="flex: 1 1 240px; max-width: 100%; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E4E2DC; padding: 24px 16px; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px">
+      <span style="width: 40px; height: 40px; border-radius: 13px; background: #1E6B5E; display: flex; align-items: center; justify-content: center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"></path><path d="M12 17.5s-3-1.8-3-3.8a1.6 1.6 0 0 1 3-.8 1.6 1.6 0 0 1 3 .8c0 2-3 3.8-3 3.8z"></path></svg>
+      </span>
+      <span style="display: flex; flex-direction: column">
+        <b style="font-size: 18px; font-weight: 800">Famy</b>
+        <span style="font-size: 12px; color: #5E6470">Familia Zavala</span>
+      </span>
+    </div>
+    <nav aria-label="Secciones" style="display: flex; flex-direction: column; gap: 2px">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="9">
+        <a href="#" style="height: 44px; border-radius: 12px; padding: 0 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; font-size: 14px; font-weight: {{n.weight}}; color: {{n.fg}}; background: {{n.bg}}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.d}}"></path></svg>
+          {{n.label}}
+        </a>
+      </sc-for>
+    </nav>
+  </aside>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px clamp(16px, 3vw, 40px) 40px; display: flex; flex-direction: column; gap: 24px; max-width: 1240px">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <p style="margin: 0; font-size: 14px; color: #5E6470">Martes 10 de noviembre</p>
+        <h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.02em">Hola, Jose</h1>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 8px; height: 44px; box-sizing: border-box; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 12px; background: #FFFFFF; min-width: 220px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5E6470" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14z M20 20l-4-4"></path></svg>
+          <label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar</label>
+          <input id="q" type="search" placeholder="Buscar en Famy" style="flex: 1; border: 0; outline: none; font: inherit; font-size: 14px; background: transparent; color: #1B1D22">
+        </div>
+        <button type="button" style="height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: #1E6B5E; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Invitar a la familia</button>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+        <div style="background: {{s.bg}}; border: 1px solid {{s.border}}; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 13px; font-weight: 600; color: {{s.fg}}">{{s.label}}</span>
+          <span style="font-size: 28px; font-weight: 800; letter-spacing: -0.02em">{{s.value}}</span>
+          <span style="font-size: 13px; color: #5E6470">{{s.sub}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; align-items: start">
+      <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <h2 style="margin: 0; font-size: 17px; font-weight: 700">Compras · Súper semanal</h2>
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #146B47; background: #DDF3E8; padding: 4px 10px; border-radius: 999px"><span style="width: 7px; height: 7px; border-radius: 4px; background: #1E9E6B"></span>En vivo</span>
+        </div>
+        <sc-for list="{{shop}}" as="i" hint-placeholder-count="5">
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; min-height: 32px">
+            <input type="checkbox" checked="{{i.done}}" style="width: 18px; height: 18px; margin: 0; accent-color: #1E6B5E">
+            <span style="flex: 1">{{i.name}}</span>
+            <span style="font-size: 12px; color: #5E6470">{{i.by}}</span>
+          </label>
+        </sc-for>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 17px; font-weight: 700">Agenda de hoy</h2>
+        <sc-for list="{{agenda}}" as="e" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <span style="width: 48px; font-size: 13px; font-weight: 700; color: #5E6470">{{e.time}}</span>
+            <span style="width: 4px; height: 34px; border-radius: 2px; background: {{e.color}}"></span>
+            <span style="display: flex; flex-direction: column"><b style="font-size: 14px; font-weight: 600">{{e.title}}</b><span style="font-size: 12px; color: #5E6470">{{e.who}}</span></span>
+          </div>
+        </sc-for>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 17px; font-weight: 700">Presupuesto por categoría</h2>
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="4">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; font-size: 13px"><span style="font-weight: 600">{{c.name}}</span><span style="color: #5E6470">{{c.txt}}</span></div>
+            <div style="height: 8px; border-radius: 4px; background: #F0EEE9; overflow: hidden"><div style="height: 8px; border-radius: 4px; background: {{c.bar}}; width: {{c.pct}}%"></div></div>
+          </div>
+        </sc-for>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 17px; font-weight: 700">Próximos pagos</h2>
+        <sc-for list="{{bills}}" as="b" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 14px">
+            <span style="width: 56px; height: 32px; border-radius: 10px; background: {{b.bg}}; color: {{b.fg}}; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{b.date}}</span>
+            <span style="flex: 1; font-weight: 600">{{b.name}}</span>
+            <b>{{b.amount}}</b>
+          </div>
+        </sc-for>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 17px; font-weight: 700">Tareas de hoy</h2>
+        <sc-for list="{{tasks}}" as="t" hint-placeholder-count="4">
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; min-height: 32px">
+            <input type="checkbox" checked="{{t.done}}" style="width: 18px; height: 18px; margin: 0; accent-color: #1E6B5E">
+            <span style="flex: 1">{{t.name}}</span>
+            <span style="font-size: 12px; color: #5E6470">{{t.who}}</span>
+          </label>
+        </sc-for>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 17px; font-weight: 700">Salud · tomas de hoy</h2>
+        <sc-for list="{{meds}}" as="m" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 14px">
+            <span style="width: 48px; font-size: 13px; font-weight: 700; color: #5E6470">{{m.time}}</span>
+            <span style="flex: 1; display: flex; flex-direction: column"><b style="font-weight: 600">{{m.name}}</b><span style="font-size: 12px; color: #5E6470">{{m.who}}</span></span>
+            <span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{m.bg}}; color: {{m.fg}}">{{m.state}}</span>
+          </div>
+        </sc-for>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 17px; font-weight: 700">Actividad reciente</h2>
+        <sc-for list="{{feed}}" as="f" hint-placeholder-count="4">
+          <div style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.45">
+            <span style="width: 28px; height: 28px; border-radius: 14px; background: {{f.color}}; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none">{{f.i}}</span>
+            <span style="flex: 1"><b>{{f.who}}</b> {{f.what}}<br><span style="color: #5E6470">{{f.when}}</span></span>
+          </div>
+        </sc-for>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const navRaw = [
+      ['Inicio', 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
+      ['Compras', 'M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2 M9 20.5h.01 M17 20.5h.01'],
+      ['Presupuesto', 'M3 7h18v13H3z M3 7l3-3h12l3 3 M16 13.5h2'],
+      ['Recetas', 'M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z M5 17a3 3 0 0 1 3-3h11'],
+      ['Horarios', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z M12 7v5l3 2'],
+      ['Tareas', 'M4 4h16v16H4z M8 12l3 3 5-6'],
+      ['Pagos', 'M6 3h12v18l-3-2-3 2-3-2-3 2z M9 8h6 M9 12h6'],
+      ['Cumpleaños', 'M4 10h16v10H4z M3 7h18v3H3z M12 7v13 M12 7c-2-4-6-3-5 0 M12 7c2-4 6-3 5 0'],
+      ['Salud', 'M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7z M7 7l7 7'],
+      ['Familia', 'M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8z M2 21a7 7 0 0 1 14 0 M17 11a3 3 0 1 0 0-6 M22 21a5 5 0 0 0-4-5']
+    ];
+    const nav = navRaw.map(([label, d], i) => ({ label, d, bg: i === 0 ? '#E3F0EC' : 'transparent', fg: i === 0 ? '#1E6B5E' : '#4A4F59', weight: i === 0 ? 700 : 500 }));
+    const white = { bg: '#FFFFFF', border: '#E4E2DC', fg: '#5E6470' };
+    return {
+      nav,
+      stats: [
+        { label: 'Compras pendientes', value: '7', sub: '2 ya en el carrito', bg: '#E3F0EC', border: '#E3F0EC', fg: '#1E6B5E' },
+        { label: 'Tareas de hoy', value: '3 de 5', sub: 'Diego: racha de 6 días', ...white },
+        { label: 'Presupuesto usado', value: '62 %', sub: '$11,160 de $18,000', ...white },
+        { label: 'Próximo pago', value: '$8,500', sub: 'Renta · 15 nov', bg: '#FBE9E0', border: '#FBE9E0', fg: '#9E4220' }
+      ],
+      shop: [
+        { name: 'Huevos', by: 'Ana', done: false }, { name: 'Leche deslactosada', by: 'Jose', done: false },
+        { name: 'Tortillas', by: 'Ana', done: true }, { name: 'Pechuga de pollo', by: 'Jose', done: false },
+        { name: 'Aguacates', by: 'Sofía', done: false }
+      ],
+      agenda: [
+        { time: '07:30', title: 'Llevar a la escuela', who: 'Papá', color: '#6B4FA0' },
+        { time: '16:00', title: 'Fútbol', who: 'Diego', color: '#2F5DA8' },
+        { time: '17:30', title: 'Clase de piano', who: 'Sofía', color: '#6B4FA0' },
+        { time: '19:00', title: 'Cena familiar', who: 'Todos', color: '#1E6B5E' }
+      ],
+      cats: [
+        { name: 'Despensa', txt: '$4,200 / $5,000', pct: 84, bar: '#1E6B5E' },
+        { name: 'Servicios', txt: '$2,380 / $3,000', pct: 79, bar: '#1E6B5E' },
+        { name: 'Transporte', txt: '$1,900 / $2,500', pct: 76, bar: '#1E6B5E' },
+        { name: 'Entretenimiento', txt: '$880 / $800', pct: 100, bar: '#C2562E' }
+      ],
+      bills: [
+        { date: '15 nov', name: 'Renta', amount: '$8,500', bg: '#FBE9E0', fg: '#9E4220' },
+        { date: '18 nov', name: 'Luz', amount: '$620', bg: '#F0EEE9', fg: '#1B1D22' },
+        { date: '22 nov', name: 'Internet', amount: '$550', bg: '#F0EEE9', fg: '#1B1D22' },
+        { date: '28 nov', name: 'Colegiatura', amount: '$2,700', bg: '#F0EEE9', fg: '#1B1D22' }
+      ],
+      tasks: [
+        { name: 'Tender camas', who: 'Sofía', done: true }, { name: 'Lavar platos', who: 'Diego', done: true },
+        { name: 'Sacar la basura', who: 'Jose', done: false }, { name: 'Regar plantas', who: 'Ana', done: false }
+      ],
+      meds: [
+        { time: '06:30', name: 'Levotiroxina 75 mcg', who: 'Ana', state: 'Tomada', bg: '#E3F0EC', fg: '#1E6B5E' },
+        { time: '08:00', name: 'Losartán 50 mg', who: 'Jose', state: 'Atrasada', bg: '#FBE9E0', fg: '#9E4220' },
+        { time: '08:00', name: 'Amoxicilina 500 mg', who: 'Diego', state: 'Tomada', bg: '#E3F0EC', fg: '#1E6B5E' },
+        { time: '16:00', name: 'Amoxicilina 500 mg', who: 'Diego', state: 'Pendiente', bg: '#F0EEE9', fg: '#4A4F59' }
+      ],
+      feed: [
+        { i: 'A', who: 'Ana', what: 'añadió «Huevos» a Compras', when: 'hace 1 min', color: '#C2562E' },
+        { i: 'D', who: 'Diego', what: 'completó «Lavar platos»', when: 'hace 20 min', color: '#2F5DA8' },
+        { i: 'J', who: 'Jose', what: 'registró un gasto de $650 en Transporte', when: 'ayer', color: '#1E6B5E' },
+        { i: 'S', who: 'Sofía', what: 'agregó una idea de regalo', when: 'ayer', color: '#6B4FA0' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

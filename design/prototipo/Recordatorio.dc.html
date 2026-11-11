@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Recordatorio de medicamento</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#FFFFFF}a:hover{color:#E3F0EC}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #123F38; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #FFFFFF; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 20px">
+  <div style="background: #FFFFFF; color: #1B1D22; border-radius: 18px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,0.25)">
+    <span style="width: 36px; height: 36px; border-radius: 10px; background: #1E6B5E; display: flex; align-items: center; justify-content: center; flex: none">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"></path></svg>
+    </span>
+    <span style="flex: 1; display: flex; flex-direction: column; gap: 1px">
+      <span style="display: flex; justify-content: space-between; font-size: 12px; color: #5E6470"><b style="color: #1B1D22">Famy · Salud</b>ahora</span>
+      <span style="font-size: 14px; font-weight: 700">Hora de tu Losartán 50 mg</span>
+      <span style="font-size: 13px; color: #4A4F59">1 tableta con el desayuno · Toca para confirmar</span>
+    </span>
+  </div>
+  <p style="margin: -10px 0 0; font-size: 12px; color: #A9CFC6; text-align: center">Así llega la notificación push; al tocarla se abre esta pantalla.</p>
+
+  <sc-if value="{{pending}}" hint-placeholder-val="{{ true }}">
+    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center">
+      <span style="width: 96px; height: 96px; border-radius: 48px; background: #1E6B5E; box-shadow: 0 0 0 14px #1A5249, 0 0 0 28px #164A42; display: flex; align-items: center; justify-content: center">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7z M7 7l7 7"></path></svg>
+      </span>
+      <p style="margin: 18px 0 0; font-size: 56px; font-weight: 800; letter-spacing: -0.03em; line-height: 1">08:00</p>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800">Losartán 50 mg</h1>
+        <p style="margin: 0; font-size: 15px; color: #CFE6DF">1 tableta · con el desayuno</p>
+        <p style="margin: 0; font-size: 13px; color: #A9CFC6">Quedan 5 tabletas en casa</p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <button type="button" onClick="{{take}}" style="height: 56px; border: 0; border-radius: 16px; background: #FFFFFF; color: #123F38; font: inherit; font-size: 17px; font-weight: 800; cursor: pointer">Ya la tomé</button>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <button type="button" onClick="{{snooze}}" style="height: 50px; border: 1px solid #4F857B; border-radius: 14px; background: transparent; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer">Posponer 10 min</button>
+        <button type="button" style="height: 50px; border: 1px solid #4F857B; border-radius: 14px; background: transparent; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer">Omitir toma</button>
+      </div>
+      <p style="margin: 4px 0 0; font-size: 12px; color: #A9CFC6; text-align: center">{{hint}}</p>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center">
+      <span style="width: 96px; height: 96px; border-radius: 48px; background: #FFFFFF; color: #1E6B5E; display: flex; align-items: center; justify-content: center">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+      </span>
+      <h1 style="margin: 0; font-size: 26px; font-weight: 800">¡Registrado!</h1>
+      <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #CFE6DF">Tomada a las 08:02. Próxima toma hoy a las 20:00.</p>
+    </div>
+    <a href="Salud.dc.html" style="height: 56px; border-radius: 16px; background: #FFFFFF; color: #123F38; font-size: 17px; font-weight: 800; display: flex; align-items: center; justify-content: center; text-decoration: none">Ver mis medicamentos</a>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { taken: false, snoozed: false }; }
+  renderVals() {
+    return {
+      pending: !this.state.taken,
+      done: this.state.taken,
+      take: () => this.setState({ taken: true }),
+      snooze: () => this.setState({ snoozed: true }),
+      hint: this.state.snoozed ? 'Te lo recordaremos a las 08:10.' : 'Si no confirmas en 30 min, avisaremos a Ana.'
+    };
+  }
+}
+</script>
+</body>
+</html>

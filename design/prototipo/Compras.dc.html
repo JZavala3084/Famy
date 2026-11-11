@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Compras</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E6B5E}a:hover{color:#15524A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F5F1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1B1D22; display: flex; flex-direction: column">
+  <main style="flex: 1; min-height: 0; overflow: hidden; padding: 24px 20px 12px; display: flex; flex-direction: column; gap: 14px">
+    <header style="display: flex; align-items: center; justify-content: space-between">
+      <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em">Compras</h1>
+      <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #146B47; background: #DDF3E8; padding: 6px 10px; border-radius: 999px">
+        <span style="width: 7px; height: 7px; border-radius: 4px; background: #1E9E6B"></span>En vivo
+      </span>
+    </header>
+
+    <div style="display: flex; gap: 8px">
+      <span style="padding: 8px 14px; border-radius: 999px; background: #1B1D22; color: #FFFFFF; font-size: 13px; font-weight: 600">Súper semanal</span>
+      <span style="padding: 8px 14px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4E2DC; font-size: 13px; font-weight: 600">Farmacia</span>
+      <span style="padding: 8px 14px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4E2DC; font-size: 13px; font-weight: 600">+ Lista</span>
+    </div>
+
+    <form style="display: flex; gap: 8px; margin: 0">
+      <label for="nuevo" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Añadir artículo</label>
+      <input id="nuevo" type="text" placeholder="Añadir artículo…" style="flex: 1; height: 48px; box-sizing: border-box; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 14px; font: inherit; font-size: 15px; background: #FFFFFF; color: #1B1D22">
+      <button type="button" aria-label="Añadir" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: #1E6B5E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg>
+      </button>
+    </form>
+
+    <div style="display: flex; justify-content: space-between; font-size: 13px; color: #5E6470">
+      <span>{{pending}} pendientes · {{doneCount}} en el carrito</span>
+      <span>Total aprox. $1,240</span>
+    </div>
+
+    <ul style="list-style: none; margin: 0; padding: 0; background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; overflow: hidden">
+      <sc-for list="{{items}}" as="it" hint-placeholder-count="8">
+        <li style="border-bottom: 1px solid #F0EEE9">
+          <button type="button" onClick="{{it.toggle}}" style="width: 100%; min-height: 54px; border: 0; background: transparent; font: inherit; color: inherit; display: flex; align-items: center; gap: 12px; padding: 8px 14px; text-align: left; cursor: pointer">
+            <span style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 8px; border: 2px solid {{it.boxBorder}}; background: {{it.boxBg}}; display: flex; align-items: center; justify-content: center; color: #FFFFFF; flex: none">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+            </span>
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 15px; font-weight: 600; color: {{it.color}}; text-decoration: {{it.deco}}">{{it.name}}</span>
+              <span style="font-size: 12px; color: #5E6470">{{it.meta}}</span>
+            </span>
+            <span style="width: 26px; height: 26px; border-radius: 13px; background: {{it.avatar}}; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{it.by}}</span>
+          </button>
+        </li>
+      </sc-for>
+    </ul>
+  </main>
+  <dc-import name="TabBar" active="compras" hint-size="390px,84px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { done: { 2: true, 6: true } }; }
+  renderVals() {
+    const base = [
+      { name: 'Huevos', meta: 'Lácteos y huevo · 1 docena', by: 'A', avatar: '#C2562E' },
+      { name: 'Leche deslactosada', meta: 'Lácteos y huevo · 2 L', by: 'J', avatar: '#1E6B5E' },
+      { name: 'Tortillas', meta: 'Panadería · 1 kg', by: 'A', avatar: '#C2562E' },
+      { name: 'Pechuga de pollo', meta: 'Carnes · 1 kg · receta Tacos', by: 'J', avatar: '#1E6B5E' },
+      { name: 'Aguacates', meta: 'Frutas y verduras · 4 pzas', by: 'S', avatar: '#6B4FA0' },
+      { name: 'Detergente', meta: 'Limpieza · 1 pza', by: 'A', avatar: '#C2562E' },
+      { name: 'Plátanos', meta: 'Frutas y verduras · 6 pzas', by: 'D', avatar: '#2F5DA8' },
+      { name: 'Cereal', meta: 'Despensa · 1 caja', by: 'D', avatar: '#2F5DA8' }
+    ];
+    const done = this.state.done;
+    const items = base.map((b, i) => {
+      const d = !!done[i];
+      return {
+        ...b,
+        boxBorder: d ? '#1E6B5E' : '#B9B5AC',
+        boxBg: d ? '#1E6B5E' : '#FFFFFF',
+        color: d ? '#5E6470' : '#1B1D22',
+        deco: d ? 'line-through' : 'none',
+        toggle: () => this.setState({ done: { ...this.state.done, [i]: !this.state.done[i] } })
+      };
+    });
+    const doneCount = items.filter((x) => x.deco === 'line-through').length;
+    return { items, doneCount, pending: items.length - doneCount };
+  }
+}
+</script>
+</body>
+</html>
