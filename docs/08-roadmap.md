@@ -6,8 +6,8 @@ Primero diseño, prototipo y documentación; después se construye. Cada fase te
 |------|-----------|------------|----------|
 | **0. Especificación** | Visión, requerimientos, arquitectura, modelo de datos, seguridad, despliegue | Esta documentación | ✅ Aprobado por Jose (2026-11-11) |
 | **1. Diseño y prototipo** | Identidad visual (logo, paleta, tipografía), flujos, wireframes y pantallas en Figma o Canva para web y móvil, prototipo navegable | Diseño aprobado por Jose + prototipo clicable | ✅ Aprobado ([09](09-diseno-ui.md)) |
-| **2. Fundaciones** | Monorepo, CI, Docker Compose local, backend `identity` (registro, verificación, login con correo y Google, JWT + refresh), `family` (crear, invitar, unirse, roles), Flyway, OpenAPI | Se puede crear cuenta, crear familia e invitar por API | 🔄 En revisión ([backend](../backend/README.md)) |
-| **3. Tiempo real + Compras + Tareas** | WebSocket STOMP, `change_log`, módulos `shopping` y `chore` | Lista de compras y tareas sincronizadas en vivo (API) | 2 semanas |
+| **2. Fundaciones** | Monorepo, CI, Docker Compose local, backend `identity` (registro, verificación, login con correo y Google, JWT + refresh), `family` (crear, invitar, unirse, roles), Flyway, OpenAPI | Se puede crear cuenta, crear familia e invitar por API | ✅ Hecho (PR #3) |
+| **3. Tiempo real + Compras + Tareas** | WebSocket STOMP, `change_log`, módulos `shopping` y `chore` | Lista de compras y tareas sincronizadas en vivo (API) | 🔄 En revisión ([backend](../backend/README.md#tiempo-real)) |
 | **4. Web (Angular) v1** | Login, onboarding de familia, inicio, compras, tareas | Primera versión usable en navegador | 3 semanas |
 | **5. Calendario, pagos y cumpleaños** | `calendar` con RRULE, `payment`, `celebration`, recordatorios programados, notificaciones web | Calendario familiar unificado con recordatorios | 3 semanas |
 | **6. Presupuesto y recetas** | `budget`, `transaction`, `recipe`, enviar ingredientes a compras, pagos que generan gastos | Todos los módulos del MVP en web | 3 semanas |

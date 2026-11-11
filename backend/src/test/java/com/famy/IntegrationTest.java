@@ -1,7 +1,10 @@
 package com.famy;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.jayway.jsonpath.JsonPath;
 import java.util.UUID;
@@ -98,5 +101,56 @@ public abstract class IntegrationTest {
 
     protected String accessTokenFor(String email) throws Exception {
         return json(login(email, PASSWORD), "$.accessToken");
+    }
+
+    protected MvcResult putJsonAs(String url, String json, String accessToken) throws Exception {
+        return perform(put(url).contentType(MediaType.APPLICATION_JSON).content(json)
+                .header("Authorization", "Bearer " + accessToken));
+    }
+
+    protected MvcResult patchJsonAs(String url, String json, String accessToken) throws Exception {
+        return perform(patch(url).contentType(MediaType.APPLICATION_JSON).content(json)
+                .header("Authorization", "Bearer " + accessToken));
+    }
+
+    protected MvcResult deleteAs(String url, String accessToken) throws Exception {
+        return perform(delete(url).header("Authorization", "Bearer " + accessToken));
+    }
+
+    protected static int status(MvcResult r) {
+        return r.getResponse().getStatus();
+    }
+
+    protected static String body(MvcResult r) throws Exception {
+        return r.getResponse().getContentAsString();
+    }
+
+    protected String meId(String accessToken) throws Exception {
+        return json(getAuth("/api/v1/me", accessToken), "$.id");
+    }
+
+    /** Crea una familia con el usuario como OWNER; devuelve su id. */
+    protected String createFamilyAs(String accessToken, String name) throws Exception {
+        MvcResult r = postJson("/api/v1/families",
+                "{\"name\":\"%s\",\"timezone\":\"America/Mexico_City\"}".formatted(name), accessToken);
+        if (status(r) != 201) {
+            throw new AssertionError("crear familia falló: " + body(r));
+        }
+        return json(r, "$.id");
+    }
+
+    /** Registra a alguien nuevo y lo une a la familia con el rol indicado; devuelve su access token. */
+    protected String joinAs(String ownerToken, String familyId, String name, String role) throws Exception {
+        String email = uniqueEmail(name.toLowerCase());
+        register(email, name);
+        verify(email);
+        MvcResult inv = postJson("/api/v1/families/" + familyId + "/invitations",
+                "{\"email\":\"%s\",\"role\":\"%s\"}".formatted(email, role), ownerToken);
+        String token = accessTokenFor(email);
+        MvcResult accept = postJson("/api/v1/invitations/" + json(inv, "$.code") + "/accept", "", token);
+        if (status(accept) != 200) {
+            throw new AssertionError("unirse falló: " + body(accept));
+        }
+        return token;
     }
 }

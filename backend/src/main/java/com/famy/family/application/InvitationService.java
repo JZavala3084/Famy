@@ -4,7 +4,7 @@ import com.famy.family.domain.Family;
 import com.famy.family.domain.FamilyInvitation;
 import com.famy.family.domain.FamilyMember;
 import com.famy.family.domain.FamilyMemberId;
-import com.famy.family.domain.FamilyRole;
+import com.famy.family.FamilyRole;
 import com.famy.family.domain.JoinRequest;
 import com.famy.family.domain.JoinRequest.Status;
 import com.famy.family.infrastructure.FamilyInvitationRepository;
@@ -17,6 +17,7 @@ import com.famy.shared.SecureTokens;
 import com.famy.shared.audit.AuditService;
 import com.famy.shared.config.FamyProperties;
 import com.famy.shared.error.ApiException;
+import com.famy.shared.events.ChangePublisher;
 import com.famy.shared.ratelimit.RateLimiter;
 import com.famy.shared.ratelimit.RateLimiter.Policy;
 import java.time.Duration;
@@ -53,11 +54,12 @@ public class InvitationService {
     private final RateLimiter rateLimiter;
     private final AuditService audit;
     private final FamyProperties props;
+    private final ChangePublisher changes;
 
     public InvitationService(FamilyRepository families, FamilyMemberRepository members,
             FamilyInvitationRepository invitations, JoinRequestRepository joinRequests, FamilyAccess access,
             FamilyService familyService, UserDirectory users, RateLimiter rateLimiter, AuditService audit,
-            FamyProperties props) {
+            FamyProperties props, ChangePublisher changes) {
         this.families = families;
         this.members = members;
         this.invitations = invitations;
@@ -68,6 +70,7 @@ public class InvitationService {
         this.rateLimiter = rateLimiter;
         this.audit = audit;
         this.props = props;
+        this.changes = changes;
     }
 
     public record CreateInvitation(FamilyRole role, String email, Integer maxUses, Integer expiresInDays,
@@ -218,9 +221,11 @@ public class InvitationService {
     }
 
     private void addMember(UUID familyId, UUID userId, FamilyRole role) {
-        members.findById(new FamilyMemberId(familyId, userId)).ifPresentOrElse(
-                previous -> previous.rejoin(role),
-                () -> members.save(new FamilyMember(familyId, userId, role)));
+        FamilyMember member = members.findById(new FamilyMemberId(familyId, userId)).map(previous -> {
+            previous.rejoin(role);
+            return previous;
+        }).orElseGet(() -> new FamilyMember(familyId, userId, role));
+        MemberChanges.joined(changes, members.saveAndFlush(member));
         // Al unirse por cualquier vía se cancelan otras solicitudes pendientes del usuario.
         joinRequests.findByUserIdAndStatus(userId, Status.PENDING).stream()
                 .filter(r -> !r.getFamilyId().equals(familyId))

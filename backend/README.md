@@ -30,8 +30,11 @@ En `dev` la clave JWT se genera al arrancar (las sesiones se pierden al reinicia
 | shared | `com.famy.shared` | Errores RFC 9457, auditoría (`audit_log`), rate limiting (Bucket4j), UUID v7, configuración |
 | identity | `com.famy.identity` | Registro, verificación de correo, login con correo y Google, JWT ES256 + refresh rotado, recuperación de contraseña, perfil |
 | family | `com.famy.family` | Familias, miembros y roles, invitaciones (código, enlace/QR, correo), solicitudes de ingreso |
+| realtime | `com.famy.realtime` | WebSocket STOMP en `/ws`, `change_log` y `GET /changes` para ponerse al día |
+| shopping | `com.famy.shopping` | Listas de compras, ítems, marcar comprados, limpiar, reordenar, sugerencias |
+| chore | `com.famy.chore` | Tareas del hogar con repetición (RRULE), rotación, historial y puntaje semanal |
 
-Cada módulo tiene `api` (controladores y DTO), `application` (casos de uso), `domain` (entidades) e `infrastructure` (repositorios y adaptadores). Lo que otros módulos pueden usar vive en el paquete raíz del módulo (p. ej. `identity.UserDirectory`).
+Cada módulo tiene `api` (controladores y DTO), `application` (casos de uso), `domain` (entidades) e `infrastructure` (repositorios y adaptadores). Lo que otros módulos pueden usar vive en el paquete raíz del módulo (p. ej. `identity.UserDirectory`, `family.FamilyMembership`, `family.FamilyRole`). Lo transversal (`DomainChange`, `ChangePublisher`, `Recurrence`) vive en `shared`.
 
 ## Endpoints (fase 2)
 
@@ -55,6 +58,52 @@ Cada módulo tiene `api` (controladores y DTO), `application` (casos de uso), `d
 | GET/POST | `/api/v1/families/{id}/join-requests[/{rid}/approve\|reject]` | Solicitudes |
 | PATCH/DELETE | `/api/v1/families/{id}/members/{userId}` | Cambiar rol / expulsar o salir |
 | POST | `/api/v1/families/{id}/transfer-ownership` | Transferir propiedad |
+
+## Endpoints (fase 3)
+
+Todos bajo `/api/v1/families/{familyId}` y solo para miembros activos (si no, 404).
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/changes?since={cursor}&limit=` | Cambios posteriores al cursor (máx. 500 por página, `hasMore` + `cursor`). 410 `resync_required` si el cursor ya se purgó |
+| GET | `/changes/cursor` | Cursor actual, para guardarlo antes de la carga inicial |
+| GET/POST | `/shopping/lists` | Listas con contadores (`?includeArchived=true`) / crear |
+| PATCH/DELETE | `/shopping/lists/{listId}` | Renombrar, ícono, archivar / borrar (adultos) |
+| POST | `/shopping/lists/reorder` | Orden nuevo de las listas (`{"ids": [...]}`) |
+| GET/POST | `/shopping/lists/{listId}/items` | Ítems (pendientes primero, comprados al final) / agregar |
+| PUT/DELETE | `/shopping/lists/{listId}/items/{itemId}` | Editar (reemplazo completo; `listId` en el cuerpo lo mueve de lista) / quitar |
+| POST | `/shopping/lists/{listId}/items/{itemId}/check` · `/uncheck` | Marcar / desmarcar como comprado |
+| POST | `/shopping/lists/{listId}/items/clear-checked` · `/reorder` | Limpiar comprados / reordenar |
+| GET | `/shopping/suggestions?q=&listId=` | Ítems más frecuentes de la familia (excluye lo pendiente en `listId`) |
+| GET/POST | `/chores` | Tareas por fecha límite (`?includeDone`, `?assigneeId`) / crear (adultos) |
+| GET/PUT/DELETE | `/chores/{choreId}` | Detalle / editar / borrar (adultos) |
+| POST | `/chores/{choreId}/complete` | Marcar como hecha (CHILD: solo las suyas; un adulto puede indicar `memberId`) |
+| GET | `/chores/{choreId}/completions` | Historial |
+| DELETE | `/chores/{choreId}/completions/{completionId}` | Deshacer la última marca |
+| GET | `/chores/scoreboard?date=` | Puntos por miembro en la semana (lunes a domingo, zona de la familia) |
+
+Las ediciones aceptan `version` opcional: si no coincide con la del servidor responde 409 `version_conflict`.
+
+## Tiempo real
+
+1. Al abrir la app: `GET /changes/cursor` → guardar el cursor, cargar los datos por REST.
+2. Conectar STOMP a `wss://<host>/ws` con `Authorization: Bearer <access token>` en el frame **CONNECT** (el navegador no puede mandar cabeceras en el handshake). Heartbeat 20 s.
+3. `SUBSCRIBE /topic/families/{familyId}` (solo miembros activos; cualquier otro destino o `SEND` cierra la conexión con un frame ERROR).
+4. Cada mensaje es un evento:
+
+```json
+{ "id": 1234, "type": "shopping.item.created", "familyId": "…", "entity": "shopping.item", "entityId": "…",
+  "op": "C", "version": 0, "actor": "…", "occurredAt": "2026-11-11T18:03:00Z", "payload": { …igual que la API REST… } }
+```
+
+   - `id` es el cursor: guardar el mayor visto. `version`: ignorar eventos con versión menor a la que ya se tiene.
+   - En `op: "D"` el payload es `{ "id": … }`.
+   - Entidades: `shopping.list`, `shopping.item`, `chore`, `chore.completion`, `family.member` (este último trae `{userId, role, active}`; recargar el detalle de la familia).
+5. Al reconectar: `GET /changes?since=<cursor>` hasta que `hasMore` sea `false`. Con 410 `resync_required`, recargar todo.
+
+El servidor cierra el WebSocket con código **4401** cuando vence el access token (reconectar con uno nuevo tras `/auth/refresh`) y con **4403** cuando el usuario sale o es expulsado de la familia.
+
+El broker es el simple de Spring en memoria (una instancia). Los cambios se registran en `change_log` en la misma transacción que el dato y se envían después del commit; se conservan 30 días.
 
 ## Sesiones
 

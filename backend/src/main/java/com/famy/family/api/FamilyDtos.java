@@ -6,7 +6,7 @@ import com.famy.family.application.InvitationService;
 import com.famy.family.application.InvitationService.CreatedInvitation;
 import com.famy.family.application.InvitationService.JoinRequestView;
 import com.famy.family.domain.FamilyInvitation;
-import com.famy.family.domain.FamilyRole;
+import com.famy.family.FamilyRole;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
