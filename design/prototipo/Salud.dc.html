@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Salud</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E6B5E}a:hover{color:#15524A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F5F1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1B1D22; display: flex; flex-direction: column">
+  <main style="flex: 1; min-height: 0; overflow: hidden; padding: 20px 20px 12px; display: flex; flex-direction: column; gap: 14px">
+    <header style="display: flex; align-items: center; gap: 12px">
+      <a href="Inicio.dc.html" aria-label="Volver al inicio" style="width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; border: 1px solid #E4E2DC; display: flex; align-items: center; justify-content: center; color: #1B1D22; flex: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+      </a>
+      <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; flex: 1">Salud</h1>
+      <a href="MedicamentoNuevo.dc.html" aria-label="Agregar medicamento" style="width: 44px; height: 44px; border-radius: 22px; background: #1E6B5E; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg>
+      </a>
+    </header>
+
+    <div style="display: flex; gap: 8px">
+      <sc-for list="{{members}}" as="m" hint-placeholder-count="4">
+        <button type="button" onClick="{{m.pick}}" style="height: 40px; padding: 0 14px 0 6px; border-radius: 999px; border: 1px solid {{m.border}}; background: {{m.bg}}; color: {{m.fg}}; font: inherit; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer">
+          <span style="width: 28px; height: 28px; border-radius: 14px; background: {{m.color}}; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{m.i}}</span>{{m.name}}
+        </button>
+      </sc-for>
+    </div>
+
+    <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 700">Condiciones y alergias</h2>
+        <span style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #5E6470">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"></path><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+          {{visibility}}
+        </span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <sc-for list="{{conditions}}" as="c" hint-placeholder-count="3">
+          <span style="padding: 6px 12px; border-radius: 999px; background: {{c.bg}}; color: {{c.fg}}; font-size: 13px; font-weight: 600">{{c.label}}</span>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 700">Tomas de hoy</h2>
+        <span style="font-size: 13px; color: #5E6470">{{takenCount}} de {{doseCount}} tomadas</span>
+      </div>
+      <sc-for list="{{doses}}" as="d" hint-placeholder-count="4">
+        <div style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid {{d.border}}; border-radius: 16px; padding: 10px 12px">
+          <span style="width: 52px; display: flex; flex-direction: column; align-items: center">
+            <b style="font-size: 15px">{{d.time}}</b>
+            <span style="font-size: 11px; font-weight: 600; color: {{d.stateColor}}">{{d.state}}</span>
+          </span>
+          <span style="width: 40px; height: 40px; border-radius: 12px; background: {{d.iconBg}}; color: {{d.iconFg}}; display: flex; align-items: center; justify-content: center; flex: none">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7z M7 7l7 7"></path></svg>
+          </span>
+          <span style="flex: 1; display: flex; flex-direction: column; min-width: 0">
+            <span style="font-size: 15px; font-weight: 600; text-decoration: {{d.deco}}">{{d.name}}</span>
+            <span style="font-size: 12px; color: #5E6470">{{d.meta}}</span>
+          </span>
+          <button type="button" onClick="{{d.toggle}}" style="height: 44px; padding: 0 12px; border-radius: 12px; border: {{d.btnBorder}}; background: {{d.btnBg}}; color: {{d.btnFg}}; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{d.btn}}</button>
+        </div>
+      </sc-for>
+    </section>
+
+    <div style="display: flex; align-items: center; gap: 10px; background: #FBE9E0; border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height: 1.45; color: #7A3418">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 4l9 16H3z M12 10v4 M12 17v.01"></path></svg>
+      <span>{{stockWarning}}</span>
+    </div>
+  </main>
+  <dc-import name="TabBar" active="inicio" hint-size="390px,84px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { who: 0, taken: { '0-0': true } }; }
+  renderVals() {
+    const people = [
+      { i: 'J', name: 'Jose', color: '#1E6B5E', visibility: 'Visible para adultos',
+        conditions: [['Hipertensión', 'c'], ['Alergia: penicilina', 'a']],
+        doses: [
+          { time: '08:00', name: 'Losartán 50 mg', meta: '1 tableta · con desayuno' },
+          { time: '14:00', name: 'Vitamina D 1000 UI', meta: '1 cápsula · con comida' },
+          { time: '20:00', name: 'Losartán 50 mg', meta: '1 tableta · antes de cenar' }
+        ],
+        stock: 'Losartán: quedan 5 tabletas (2 días). Se añadirá a Compras › Farmacia.' },
+      { i: 'A', name: 'Ana', color: '#C2562E', visibility: 'Solo Ana',
+        conditions: [['Hipotiroidismo', 'c']],
+        doses: [{ time: '06:30', name: 'Levotiroxina 75 mcg', meta: '1 tableta · en ayunas' }],
+        stock: 'Levotiroxina: quedan 24 tabletas.' },
+      { i: 'S', name: 'Sofía', color: '#6B4FA0', visibility: 'Visible para adultos',
+        conditions: [['Asma leve', 'c'], ['Alergia: polen', 'a']],
+        doses: [{ time: '21:00', name: 'Salbutamol inhalador', meta: '2 inhalaciones · solo si hay síntomas' }],
+        stock: 'Inhalador: revisar fecha de vencimiento en enero.' },
+      { i: 'D', name: 'Diego', color: '#2F5DA8', visibility: 'Visible para adultos',
+        conditions: [['Sin condiciones registradas', 'n']],
+        doses: [{ time: '08:00', name: 'Amoxicilina 500 mg', meta: 'Cada 8 h · termina el 14 nov' }, { time: '16:00', name: 'Amoxicilina 500 mg', meta: 'Cada 8 h · termina el 14 nov' }],
+        stock: 'Amoxicilina: tratamiento de 7 días, quedan 3 días.' }
+    ];
+    const who = this.state.who;
+    const p = people[who];
+    const tone = { c: ['#E6ECF7', '#22457E'], a: ['#FBE9E0', '#7A3418'], n: ['#F0EEE9', '#5E6470'] };
+    const doses = p.doses.map((d, i) => {
+      const key = who + '-' + i;
+      const t = !!this.state.taken[key];
+      const late = !t && i === 0 && who !== 2;
+      return {
+        ...d,
+        state: t ? 'Tomada' : late ? 'Atrasada' : 'Pendiente',
+        stateColor: t ? '#1E6B5E' : late ? '#9E4220' : '#5E6470',
+        border: late ? '#C2562E' : '#E4E2DC',
+        iconBg: t ? '#E3F0EC' : '#F0EEE9', iconFg: t ? '#1E6B5E' : '#4A4F59',
+        deco: t ? 'line-through' : 'none',
+        btn: t ? 'Deshacer' : 'Tomar',
+        btnBg: t ? '#FFFFFF' : '#1E6B5E', btnFg: t ? '#1B1D22' : '#FFFFFF',
+        btnBorder: t ? '1px solid #D9D6CF' : '0',
+        toggle: () => this.setState({ taken: { ...this.state.taken, [key]: !this.state.taken[key] } })
+      };
+    });
+    return {
+      members: people.map((m, i) => ({
+        i: m.i, name: m.name, color: m.color,
+        bg: i === who ? '#1B1D22' : '#FFFFFF', fg: i === who ? '#FFFFFF' : '#1B1D22', border: i === who ? '#1B1D22' : '#E4E2DC',
+        pick: () => this.setState({ who: i })
+      })),
+      visibility: p.visibility,
+      conditions: p.conditions.map(([label, k]) => ({ label, bg: tone[k][0], fg: tone[k][1] })),
+      doses,
+      doseCount: doses.length,
+      takenCount: doses.filter((d) => d.state === 'Tomada').length,
+      stockWarning: p.stock
+    };
+  }
+}
+</script>
+</body>
+</html>

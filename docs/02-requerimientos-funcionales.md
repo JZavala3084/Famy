@@ -74,6 +74,17 @@ Todos los módulos viven dentro de una **familia**. Cada dato pertenece a una fa
 ### M12. Webhooks salientes (post-MVP)
 - RF-12.1 La familia puede registrar URLs que reciben eventos (`shopping.item.created`, `payment.due`...) firmados con HMAC, para integrarse con Home Assistant, n8n, Telegram, etc.
 
+### M13. Salud y medicamentos
+- RF-13.1 Cada miembro registra sus condiciones de salud y alergias (nombre, tipo, notas). Un adulto administrador puede gestionar los datos de los menores.
+- RF-13.2 Medicamentos por persona: nombre, dosis, cantidad por toma, instrucciones (en ayunas, con comida), fecha de inicio y fin o tratamiento continuo.
+- RF-13.3 Frecuencia: todos los días a horas fijas, cada X horas, días específicos de la semana o solo si es necesario.
+- RF-13.4 Notificación push (y alarma local en el móvil) a la hora de cada toma, con acciones «Tomada», «Posponer 10 min» y «Omitir».
+- RF-13.5 Si la toma no se confirma, se repite el aviso (configurable) y, opcionalmente, se avisa a un adulto de la familia tras 30 min.
+- RF-13.6 Historial de tomas (tomada, omitida, atrasada) por día.
+- RF-13.7 Control de existencias: al llegar al mínimo configurado se avisa y se agrega el medicamento a la lista de Compras › Farmacia.
+- RF-13.8 Visibilidad por registro: solo yo, adultos de la familia o toda la familia.
+- RF-13.9 Los datos de salud se cifran en reposo a nivel de columna y cada acceso queda en `audit_log`.
+
 ## Reglas generales
 - Toda entidad registra `created_by`, `created_at`, `updated_at`.
 - Borrado lógico (`deleted_at`) en datos de usuario para poder deshacer y sincronizar.

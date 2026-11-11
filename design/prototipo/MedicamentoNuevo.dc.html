@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Famy · Agregar medicamento</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E6B5E}a:hover{color:#15524A}
+</style>
+</helmet>
+<div style="width: 390px; height: 1060px; box-sizing: border-box; background: #F6F5F1; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1B1D22; padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 18px">
+  <header style="display: flex; align-items: center; gap: 12px">
+    <a href="Salud.dc.html" aria-label="Cancelar y volver a Salud" style="width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; border: 1px solid #E4E2DC; display: flex; align-items: center; justify-content: center; color: #1B1D22; flex: none">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12 M18 6L6 18"></path></svg>
+    </a>
+    <h1 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em">Nuevo medicamento</h1>
+  </header>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <p style="margin: 0; font-size: 14px; font-weight: 600">Para quién</p>
+    <div style="display: flex; gap: 8px">
+      <span style="height: 40px; padding: 0 14px 0 6px; border-radius: 999px; background: #1B1D22; color: #FFFFFF; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px"><span style="width: 28px; height: 28px; border-radius: 14px; background: #1E6B5E; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">J</span>Jose</span>
+      <span style="height: 40px; padding: 0 14px 0 6px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4E2DC; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px"><span style="width: 28px; height: 28px; border-radius: 14px; background: #C2562E; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">A</span>Ana</span>
+      <span style="height: 40px; padding: 0 14px 0 6px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4E2DC; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px"><span style="width: 28px; height: 28px; border-radius: 14px; background: #6B4FA0; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">S</span>Sofía</span>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+    <div style="grid-column: span 3; display: flex; flex-direction: column; gap: 6px">
+      <label for="med" style="font-size: 14px; font-weight: 600">Medicamento</label>
+      <input id="med" type="text" value="Losartán" style="height: 48px; box-sizing: border-box; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 14px; font: inherit; font-size: 16px; background: #FFFFFF; color: #1B1D22">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="dosis" style="font-size: 14px; font-weight: 600">Dosis</label>
+      <input id="dosis" type="text" value="50 mg" style="height: 48px; box-sizing: border-box; width: 100%; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 12px; font: inherit; font-size: 16px; background: #FFFFFF; color: #1B1D22">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="cant" style="font-size: 14px; font-weight: 600">Cantidad</label>
+      <input id="cant" type="text" value="1 tableta" style="height: 48px; box-sizing: border-box; width: 100%; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 12px; font: inherit; font-size: 16px; background: #FFFFFF; color: #1B1D22">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="stock" style="font-size: 14px; font-weight: 600">En casa</label>
+      <input id="stock" type="text" value="30" style="height: 48px; box-sizing: border-box; width: 100%; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 12px; font: inherit; font-size: 16px; background: #FFFFFF; color: #1B1D22">
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <p style="margin: 0; font-size: 14px; font-weight: 600">Frecuencia</p>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{freqs}}" as="f" hint-placeholder-count="4">
+        <button type="button" onClick="{{f.pick}}" style="height: 44px; border-radius: 12px; border: 1px solid {{f.border}}; background: {{f.bg}}; color: {{f.fg}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">{{f.label}}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <p style="margin: 0; font-size: 14px; font-weight: 600">Horarios</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px">
+      <sc-for list="{{times}}" as="t" hint-placeholder-count="2">
+        <span style="height: 44px; padding: 0 14px; border-radius: 12px; background: #E3F0EC; color: #1E6B5E; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z M12 7v5l3 2"></path></svg>{{t}}
+        </span>
+      </sc-for>
+      <button type="button" style="height: 44px; padding: 0 14px; border-radius: 12px; border: 1px dashed #1E6B5E; background: transparent; color: #1E6B5E; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">+ Hora</button>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="ini" style="font-size: 14px; font-weight: 600">Desde</label>
+      <input id="ini" type="text" value="11 nov 2026" style="height: 48px; box-sizing: border-box; width: 100%; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #1B1D22">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="fin" style="font-size: 14px; font-weight: 600">Hasta</label>
+      <input id="fin" type="text" value="Tratamiento continuo" style="height: 48px; box-sizing: border-box; width: 100%; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #1B1D22">
+    </div>
+  </div>
+
+  <section style="background: #FFFFFF; border: 1px solid #E4E2DC; border-radius: 18px; padding: 4px 16px; display: flex; flex-direction: column">
+    <sc-for list="{{toggles}}" as="o" hint-placeholder-count="4">
+      <div style="display: flex; align-items: center; gap: 12px; min-height: 60px; border-bottom: 1px solid #F0EEE9">
+        <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+          <span style="font-size: 14px; font-weight: 600">{{o.title}}</span>
+          <span style="font-size: 12px; color: #5E6470">{{o.sub}}</span>
+        </span>
+        <button type="button" role="switch" aria-checked="{{o.aria}}" aria-label="{{o.title}}" onClick="{{o.toggle}}" style="width: 52px; height: 32px; flex: none; border: 0; border-radius: 16px; background: {{o.track}}; padding: 3px; display: flex; justify-content: {{o.justify}}; cursor: pointer">
+          <span style="width: 26px; height: 26px; border-radius: 13px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.2)"></span>
+        </button>
+      </div>
+    </sc-for>
+  </section>
+
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <label for="vis" style="font-size: 14px; font-weight: 600">Quién puede verlo</label>
+    <select id="vis" style="height: 48px; box-sizing: border-box; border: 1px solid #D9D6CF; border-radius: 12px; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #1B1D22">
+      <option>Solo yo</option>
+      <option selected>Adultos de la familia</option>
+      <option>Toda la familia</option>
+    </select>
+  </div>
+
+  <div style="flex: 1"></div>
+  <a href="Salud.dc.html" style="height: 52px; flex: none; border-radius: 14px; background: #1E6B5E; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none">Guardar y activar recordatorios</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1060}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { freq: 0, on: { 0: true, 1: true, 2: true, 3: false } }; }
+  renderVals() {
+    const labels = ['Todos los días', 'Cada X horas', 'Días específicos', 'Solo si es necesario'];
+    const timesBy = [['08:00', '20:00'], ['08:00', '16:00', '00:00'], ['L · M · V  08:00'], []];
+    const freqs = labels.map((label, i) => {
+      const on = i === this.state.freq;
+      return { label, bg: on ? '#1B1D22' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1B1D22', border: on ? '#1B1D22' : '#D9D6CF', pick: () => this.setState({ freq: i }) };
+    });
+    const opts = [
+      { title: 'Notificarme a la hora', sub: 'Push + alarma en el teléfono' },
+      { title: 'Repetir si no confirmo', sub: 'Cada 10 min, hasta 3 veces' },
+      { title: 'Avisar a un adulto', sub: 'Si no se confirma en 30 min' },
+      { title: 'Aviso de reposición', sub: 'Cuando queden 5 · añade a Compras' }
+    ];
+    const toggles = opts.map((o, i) => {
+      const on = !!this.state.on[i];
+      return { ...o, aria: on ? 'true' : 'false', track: on ? '#1E6B5E' : '#B9B5AC', justify: on ? 'flex-end' : 'flex-start', toggle: () => this.setState({ on: { ...this.state.on, [i]: !this.state.on[i] } }) };
+    });
+    return { freqs, times: timesBy[this.state.freq], toggles };
+  }
+}
+</script>
+</body>
+</html>

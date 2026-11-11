@@ -39,6 +39,13 @@ Indicador **«En vivo»** (punto verde): representa los cambios que llegan en ti
 10. **Calendario de pagos** – mes con puntos (pagado/pendiente), próximos pagos con responsable y monto.
 11. **Cumpleaños** – próximo cumpleaños destacado (días, ideas de regalo, presupuesto), recordatorios 7 y 1 día antes, lista anual.
 
+### Salud y medicamentos (móvil)
+13. **Salud** – selector de miembro, condiciones y alergias (con nivel de visibilidad), tomas del día con botón «Tomar» (interactivo), estado atrasada/pendiente/tomada y aviso de pocas existencias.
+14. **Agregar medicamento** – para quién, nombre, dosis, cantidad, existencias, frecuencia (todos los días, cada X horas, días específicos, si es necesario), horarios, fechas, interruptores de recordatorio (aviso a la hora, repetir, avisar a un adulto, reposición) y quién puede verlo.
+15. **Recordatorio de toma** – cómo llega la notificación push y la pantalla de alarma con «Ya la tomé», «Posponer 10 min» y «Omitir toma».
+
+En Inicio, «Salud» reemplaza a «Familia» en los accesos (la familia se gestiona desde el perfil) y aparece un aviso de toma pendiente. En el panel web se añade «Salud» al menú y un panel «Tomas de hoy».
+
 ### Web (Angular)
 12. **Panel familiar** – menú lateral con todos los módulos (se apila en móvil), buscador, invitar, 4 indicadores y paneles de compras, agenda, presupuesto, pagos, tareas y actividad reciente.
 

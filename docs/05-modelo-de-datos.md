@@ -91,6 +91,15 @@ erDiagram
 |-------|----------------|
 | `celebration` | id, family_id, type (`BIRTHDAY`, `ANNIVERSARY`, `OTHER`), person_name, user_id (si es miembro), date (mes-día), year (opcional), notes, gift_ideas (JSONB) |
 
+### Salud
+| Tabla | Columnas clave |
+|-------|----------------|
+| `health_condition` | id, family_id, user_id, type (`CONDITION`, `ALLERGY`), name_enc, notes_enc, visibility (`SELF`, `ADULTS`, `FAMILY`) |
+| `medication` | id, family_id, user_id, name_enc, dose, unit, quantity_per_intake, instructions_enc, schedule_type (`FIXED_TIMES`, `INTERVAL`, `WEEKDAYS`, `AS_NEEDED`), times (time[]), interval_hours, weekdays (smallint[]), starts_on, ends_on, stock, low_stock_threshold, remind_repeat_min, escalate_after_min, escalate_to_user_id, visibility, active |
+| `medication_intake` | id, medication_id, family_id, scheduled_at, status (`PENDING`, `TAKEN`, `SNOOZED`, `SKIPPED`, `MISSED`), taken_at, confirmed_by |
+
+Los campos `*_enc` se cifran con AES-GCM en la aplicación (clave fuera de la base). Las tomas futuras se generan a partir de `medication` y se programan en `scheduled_reminder`.
+
 ### Transversales
 | Tabla | Columnas clave |
 |-------|----------------|
