@@ -50,8 +50,8 @@ erDiagram
 ### Compras
 | Tabla | Columnas clave |
 |-------|----------------|
-| `shopping_list` | id, family_id, name, icon, position, archived_at |
-| `shopping_item` | id, list_id, family_id, name, quantity, unit, category, note, checked_at, checked_by, position |
+| `shopping_list` | id, family_id, name, icon, position, archived_at, deleted_at |
+| `shopping_item` | id, list_id, family_id, name, quantity, unit, category, note, checked_at, checked_by, position, deleted_at (los borrados se conservan para las sugerencias) |
 
 ### Presupuesto
 | Tabla | Columnas clave |
@@ -77,8 +77,8 @@ erDiagram
 ### Tareas del hogar
 | Tabla | Columnas clave |
 |-------|----------------|
-| `chore` | id, family_id, title, description, due_at, rrule, points, rotation (boolean), rotation_order (uuid[]), current_assignee_id |
-| `chore_completion` | id, chore_id, family_id, completed_by, completed_at, occurrence_date |
+| `chore` | id, family_id, title, description, due_at, rrule, recurrence_start (DTSTART), points, rotation (boolean), rotation_order (uuid[]), current_assignee_id, completed_at (tareas sin repetición), deleted_at |
+| `chore_completion` | id, chore_id, family_id, completed_by, recorded_by, completed_at, occurrence_date, points (al momento de hacerla), previous_due_at, previous_assignee_id (para deshacer) |
 
 ### Pagos
 | Tabla | Columnas clave |
@@ -104,6 +104,7 @@ Los campos `*_enc` se cifran con AES-GCM en la aplicación (clave fuera de la ba
 | Tabla | Columnas clave |
 |-------|----------------|
 | `change_log` | id (bigserial = cursor), family_id, entity, entity_id, op (`C`,`U`,`D`), version, actor_id, occurred_at, payload (JSONB) |
+| `change_log_watermark` | id (= 1), purged_up_to (cursor hasta el que se purgó; un cliente con un cursor menor recarga todo) |
 | `notification` | id, user_id, family_id, type, title, body, data (JSONB), read_at, created_at |
 | `notification_preference` | user_id, type, push_enabled, quiet_from, quiet_to |
 | `scheduled_reminder` | id, family_id, target_type, target_id, fire_at, sent_at |
@@ -114,6 +115,6 @@ Los campos `*_enc` se cifran con AES-GCM en la aplicación (clave fuera de la ba
 
 ## Índices y reglas
 - Índice `(family_id, updated_at)` en todas las tablas de dominio para la sincronización.
-- `change_log (family_id, id)` para recuperar cambios desde un cursor; se purga a los 30 días.
+- `change_log (family_id, id)` para recuperar cambios desde un cursor; se purga a los 30 días. Antes de insertar se toma un advisory lock por familia para que los cursores de una familia queden en orden de commit.
 - Recurrencias guardadas como RRULE (RFC 5545) y expandidas en el backend con `ical4j` o `lib-recur` para el rango pedido.
 - Los recordatorios se calculan al crear / editar y se guardan en `scheduled_reminder`; un job (`@Scheduled` + `SELECT ... FOR UPDATE SKIP LOCKED`) los envía.

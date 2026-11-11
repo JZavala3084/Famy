@@ -55,6 +55,9 @@ class SecurityConfig {
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.POST, PUBLIC_AUTH_ENDPOINTS).permitAll()
                         .requestMatchers("/actuator/health/**", "/actuator/health", "/error").permitAll()
+                        // Handshake WebSocket: el navegador no puede enviar Authorization; el token se valida en el
+                        // frame STOMP CONNECT (ver realtime.infrastructure.StompAuthInterceptor).
+                        .requestMatchers(HttpMethod.GET, "/ws").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o.jwt(Customizer.withDefaults()))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

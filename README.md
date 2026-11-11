@@ -2,7 +2,7 @@
 
 Aplicación web y móvil (Android e iOS) para organizar la vida de una familia en un solo lugar: lista de compras, presupuesto, recetas, horarios, tareas del hogar, calendario de pagos, cumpleaños, salud y medicamentos, y más. Todos los miembros ven los cambios al instante.
 
-> Estado: **Fase 2 – Fundaciones del backend** en revisión (cuentas, familias e invitaciones por API). Ver [08 · Roadmap](docs/08-roadmap.md) y [backend/README.md](backend/README.md).
+> Estado: **Fase 3 – Tiempo real, compras y tareas** en revisión (listas de compras y tareas sincronizadas en vivo por WebSocket, sobre las cuentas y familias de la fase 2). Ver [08 · Roadmap](docs/08-roadmap.md) y [backend/README.md](backend/README.md).
 
 ## Propuesta de valor
 

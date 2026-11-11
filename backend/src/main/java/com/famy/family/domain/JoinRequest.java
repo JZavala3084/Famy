@@ -1,5 +1,6 @@
 package com.famy.family.domain;
 
+import com.famy.family.FamilyRole;
 import com.famy.shared.Ids;
 import com.famy.shared.persistence.BaseEntity;
 import jakarta.persistence.Column;

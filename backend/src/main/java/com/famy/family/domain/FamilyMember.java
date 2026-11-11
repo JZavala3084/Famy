@@ -1,5 +1,6 @@
 package com.famy.family.domain;
 
+import com.famy.family.FamilyRole;
 import com.famy.shared.persistence.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -79,6 +80,10 @@ public class FamilyMember extends BaseEntity<FamilyMemberId> {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public long getVersion() {
+        return version;
     }
 
     public Instant getJoinedAt() {

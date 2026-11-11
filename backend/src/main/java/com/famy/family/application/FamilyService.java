@@ -2,13 +2,16 @@ package com.famy.family.application;
 
 import com.famy.family.domain.Family;
 import com.famy.family.domain.FamilyMember;
-import com.famy.family.domain.FamilyRole;
+import com.famy.family.FamilyRole;
 import com.famy.family.infrastructure.FamilyMemberRepository;
 import com.famy.family.infrastructure.FamilyRepository;
 import com.famy.identity.UserDirectory;
 import com.famy.identity.UserSummary;
 import com.famy.shared.audit.AuditService;
 import com.famy.shared.error.ApiException;
+import com.famy.shared.events.ChangePublisher;
+import com.famy.family.MemberLeft;
+import org.springframework.context.ApplicationEventPublisher;
 import java.time.ZoneId;
 import java.util.Currency;
 import java.util.List;
@@ -27,14 +30,18 @@ public class FamilyService {
     private final FamilyAccess access;
     private final UserDirectory users;
     private final AuditService audit;
+    private final ChangePublisher changes;
+    private final ApplicationEventPublisher events;
 
     public FamilyService(FamilyRepository families, FamilyMemberRepository members, FamilyAccess access,
-            UserDirectory users, AuditService audit) {
+            UserDirectory users, AuditService audit, ChangePublisher changes, ApplicationEventPublisher events) {
         this.families = families;
         this.members = members;
         this.access = access;
         this.users = users;
         this.audit = audit;
+        this.changes = changes;
+        this.events = events;
     }
 
     public record CreateFamily(String name, String avatarUrl, String currency, String timezone) {
@@ -112,6 +119,7 @@ public class FamilyService {
         }
         FamilyRole previous = target.getRole();
         target.changeRole(newRole);
+        MemberChanges.updated(changes, members.saveAndFlush(target));
         audit.record("family.role_changed", actorId, familyId,
                 Map.of("target", targetId.toString(), "from", previous.name(), "to", newRole.name()));
         return new MemberView(target, users.find(targetId).orElse(null));
@@ -131,6 +139,8 @@ public class FamilyService {
             }
             actor.leave();
             audit.record("family.left", actorId, familyId, null);
+            MemberChanges.updated(changes, members.saveAndFlush(actor));
+            events.publishEvent(new MemberLeft(familyId, actorId));
             return;
         }
         if (!actor.getRole().isManager()) {
@@ -144,6 +154,8 @@ public class FamilyService {
         }
         target.leave();
         audit.record("family.member_removed", actorId, familyId, Map.of("target", targetId.toString()));
+        MemberChanges.updated(changes, members.saveAndFlush(target));
+        events.publishEvent(new MemberLeft(familyId, targetId));
     }
 
     /** El OWNER entrega la propiedad a otro adulto de la familia y queda como ADMIN. */
@@ -160,6 +172,9 @@ public class FamilyService {
         }
         target.changeRole(FamilyRole.OWNER);
         owner.changeRole(FamilyRole.ADMIN);
+        members.flush();
+        MemberChanges.updated(changes, owner);
+        MemberChanges.updated(changes, target);
         families.findById(familyId).orElseThrow().transferOwnership(newOwnerId);
         families.flush();
         audit.record("family.ownership_transferred", actorId, familyId, Map.of("to", newOwnerId.toString()));

@@ -1,7 +1,7 @@
 package com.famy.family.application;
 
 import com.famy.family.domain.FamilyMember;
-import com.famy.family.domain.FamilyRole;
+import com.famy.family.FamilyRole;
 import com.famy.family.infrastructure.FamilyMemberRepository;
 import com.famy.shared.error.ApiException;
 import com.famy.shared.security.CurrentUser;

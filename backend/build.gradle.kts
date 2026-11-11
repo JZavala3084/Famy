@@ -39,6 +39,8 @@ dependencies {
     implementation("com.bucket4j:bucket4j_jdk17-core:8.22.0")
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.bouncycastle:bcprov-jdk18on:1.86")
+    implementation("org.dmfs:lib-recur:0.17.1")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
 
     runtimeOnly("org.flywaydb:flyway-database-postgresql")
     runtimeOnly("org.postgresql:postgresql")
