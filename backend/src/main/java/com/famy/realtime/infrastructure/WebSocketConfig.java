@@ -53,6 +53,9 @@ class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setHeartbeatValue(new long[] {20_000, 20_000})
                 .setTaskScheduler(brokerScheduler);
         registry.setApplicationDestinationPrefixes("/app");
+        // El canal de salida usa un pool de hilos: sin esto, dos cambios del mismo commit (p. ej. el ítem y el
+        // contador de su lista) pueden llegar a una sesión en desorden.
+        registry.setPreservePublishOrder(true);
     }
 
     @Override

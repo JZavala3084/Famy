@@ -93,7 +93,8 @@ sequenceDiagram
 
 ## Web (Angular)
 - Angular con standalone components, signals y lazy loading por módulo.
-- Estado: servicios con signals + caché por recurso; el cliente STOMP (`@stomp/rx-stomp`) aplica los eventos al estado.
+- Estado: servicios con signals + caché por recurso; el cliente STOMP (`@stomp/stompjs`) aplica los eventos al estado (deduplicados por `id`, con control de `version`).
+- Sin Angular Material ni Tailwind: CSS propio con los tokens del diseño ([09](09-diseno-ui.md)). Detalle en [web/README.md](../web/README.md).
 - Interceptor HTTP para el access token y refresh automático.
 - PWA (service worker) para instalación y notificaciones web.
 

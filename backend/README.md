@@ -80,6 +80,7 @@ Todos bajo `/api/v1/families/{familyId}` y solo para miembros activos (si no, 40
 | POST | `/chores/{choreId}/complete` | Marcar como hecha (CHILD: solo las suyas; un adulto puede indicar `memberId`) |
 | GET | `/chores/{choreId}/completions` | Historial |
 | DELETE | `/chores/{choreId}/completions/{completionId}` | Deshacer la última marca |
+| GET | `/chores/completions?date=` | Marcas de toda la familia en un día (hoy por defecto, zona de la familia). Las tareas que se repiten avanzan al marcarse; con esto el cliente sabe qué se hizo hoy |
 | GET | `/chores/scoreboard?date=` | Puntos por miembro en la semana (lunes a domingo, zona de la familia) |
 
 Las ediciones aceptan `version` opcional: si no coincide con la del servidor responde 409 `version_conflict`.
@@ -103,7 +104,7 @@ Las ediciones aceptan `version` opcional: si no coincide con la del servidor res
 
 El servidor cierra el WebSocket con código **4401** cuando vence el access token (reconectar con uno nuevo tras `/auth/refresh`) y con **4403** cuando el usuario sale o es expulsado de la familia.
 
-El broker es el simple de Spring en memoria (una instancia). Los cambios se registran en `change_log` en la misma transacción que el dato y se envían después del commit; se conservan 30 días.
+El broker es el simple de Spring en memoria (una instancia), con `preservePublishOrder` para que cada sesión reciba los eventos en el orden en que se publicaron. Aun así el cliente deduplica por `id` en lugar de descartar todo lo menor al cursor. Los cambios se registran en `change_log` en la misma transacción que el dato y se envían después del commit; se conservan 30 días.
 
 ## Sesiones
 
