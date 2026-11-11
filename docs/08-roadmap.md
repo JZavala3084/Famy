@@ -4,8 +4,8 @@ Primero diseño, prototipo y documentación; después se construye. Cada fase te
 
 | Fase | Contenido | Entregable | Estimado |
 |------|-----------|------------|----------|
-| **0. Especificación** | Visión, requerimientos, arquitectura, modelo de datos, seguridad, despliegue | Esta documentación | Hecho (borrador para revisión) |
-| **1. Diseño y prototipo** | Identidad visual (logo, paleta, tipografía), flujos, wireframes y pantallas en Figma o Canva para web y móvil, prototipo navegable | Diseño aprobado por Jose + prototipo clicable | 1-2 semanas |
+| **0. Especificación** | Visión, requerimientos, arquitectura, modelo de datos, seguridad, despliegue | Esta documentación | ✅ Aprobado por Jose (2026-11-11) |
+| **1. Diseño y prototipo** | Identidad visual (logo, paleta, tipografía), flujos, wireframes y pantallas en Figma o Canva para web y móvil, prototipo navegable | Diseño aprobado por Jose + prototipo clicable | ✅ Aprobado ([09](09-diseno-ui.md)) |
 | **2. Fundaciones** | Monorepo, CI, Docker Compose local, backend `identity` (registro, verificación, login con correo y Google, JWT + refresh), `family` (crear, invitar, unirse, roles), Flyway, OpenAPI | Se puede crear cuenta, crear familia e invitar por API | 2-3 semanas |
 | **3. Tiempo real + Compras + Tareas** | WebSocket STOMP, `change_log`, módulos `shopping` y `chore` | Lista de compras y tareas sincronizadas en vivo (API) | 2 semanas |
 | **4. Web (Angular) v1** | Login, onboarding de familia, inicio, compras, tareas | Primera versión usable en navegador | 3 semanas |
@@ -39,14 +39,14 @@ flowchart LR
 5. Construir app móvil KMP (fase 7).
 6. Desplegar en homelab (fase 8).
 
-## Decisiones pendientes para Jose
-| # | Pregunta | Propuesta por defecto |
-|---|----------|-----------------------|
-| P-1 | ¿Figma o Canva para el diseño? | Figma (mejor para prototipos y handoff a código) |
+## Decisiones (aprobadas por Jose el 2026-11-11)
+| # | Pregunta | Decisión |
+|---|----------|----------|
+| P-1 | ¿Herramienta de diseño? | Lienzo de diseño con prototipo navegable (ver [09](09-diseno-ui.md)); Figma solo si se necesita handoff adicional |
 | P-2 | ¿Dominio para el homelab y cómo exponerlo? | Subdominio propio + Cloudflare Tunnel |
-| P-3 | ¿Moneda por defecto? | ✅ Decidido: USD por defecto; cada usuario la elige en Configuración (y la familia tiene la suya para el presupuesto compartido) |
+| P-3 | ¿Moneda por defecto? | USD por defecto; cada usuario la elige en Configuración (y la familia tiene la suya para el presupuesto compartido) |
 | P-4 | ¿Los hijos ven presupuesto y pagos? | No por defecto, configurable |
 | P-5 | ¿Unirse requiere aprobación del admin? | Sí para código, no para invitación por correo |
 | P-6 | ¿Gradle o Maven para el backend? | Gradle Kotlin DSL (mismo lenguaje que móvil) |
-| P-7 | ¿Cuenta de Apple Developer para iOS? | Necesaria para TestFlight (USD 99/año); Android primero |
+| P-7 | ¿Cuenta de Apple Developer para iOS? | Android primero; iOS por TestFlight cuando haya cuenta (USD 99/año) |
 | P-8 | ¿Proveedor de correo (SMTP)? | Resend o Brevo (plan gratuito) |

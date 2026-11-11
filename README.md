@@ -2,7 +2,7 @@
 
 Aplicación web y móvil (Android e iOS) para organizar la vida de una familia en un solo lugar: lista de compras, presupuesto, recetas, horarios, tareas del hogar, calendario de pagos, cumpleaños y más. Todos los miembros ven los cambios al instante.
 
-> Estado: **Fase 0 – Especificación y diseño.** Todavía no hay código. El diseño en Figma/Canva y el prototipo se trabajan antes de construir.
+> Estado: **Especificación y diseño aprobados (2026-11-11).** Siguiente: Fase 2 – Fundaciones del backend. Ver [08 · Roadmap](docs/08-roadmap.md).
 
 ## Propuesta de valor
 
